@@ -1,6 +1,11 @@
-import java.util.Map;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Driver {
+    private final static Logger LOGGER =
+            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    
     private ServerCommunication serverCommunication;
     
     public Driver() { }
@@ -10,28 +15,30 @@ public class Driver {
         
         if (args.length >= 1) {
             final int portNumber = Integer.parseInt(args[0]);
-            System.out.println("CloudJam 2020 Sustainable Trip Planner and Navigation "
+            LOGGER.log(Level.INFO, "CloudJam 2020 Sustainable Trip Planner and Navigation "
                     + "App Server starting on port " + portNumber + ".");
             
             final Driver driver = new Driver();
-            driver.serverCommunication = new ServerCommunication(portNumber).listen();
             
-            String line = "";
-            while (!line.equals("Over")) {
-                final Map<String, String> data = driver.serverCommunication.data();
-                for (Map.Entry<String, String> entry :
-                    data.entrySet()) {
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        System.out.println(entry.getKey() + ": " + entry.getValue());
-                        line = entry.getValue();
-                    }
+            try {
+                driver.serverCommunication = new ServerCommunication(portNumber);
+                LOGGER.log(Level.INFO, "Ready");
+                while (true) {
+                    driver.serverCommunication.listen();
                 }
-                data.clear();
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Server error.", e);
+            } finally {
+                try {
+                    driver.serverCommunication.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close server.", e);
+                }
             }
-            driver.serverCommunication.close();
         } else {
-            throw new IllegalArgumentException("Wrong number of arguments.");
+            final IllegalArgumentException illegal = new IllegalArgumentException("Wrong number of arguments.");
+            LOGGER.log(Level.SEVERE, "Wrong number of arguments.", illegal);
+            throw illegal;
         }
-        
     }
 }
