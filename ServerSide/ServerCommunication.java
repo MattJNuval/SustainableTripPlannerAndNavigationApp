@@ -63,7 +63,7 @@ public final class ServerCommunication {
                     LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
                 } 
             }   
-            }
+        }
     }
     
     public ServerCommunication close()
