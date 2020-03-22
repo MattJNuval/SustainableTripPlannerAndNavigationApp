@@ -32,10 +32,10 @@
 
         <service
             android:name="com.here.android.mpa.service.MapService"
-            android:label="{YOUR_LABEL_NAME}"
+            android:label="SustainabilityApp"
             android:exported="false">
             <intent-filter>
-                <action android:name="{YOUR_INTENT_NAME}">
+                <action android:name="com.example.sustainabilityapp.MapService">
                 </action>
             </intent-filter>
         </service>

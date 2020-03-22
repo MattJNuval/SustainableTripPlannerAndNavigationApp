@@ -10,6 +10,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.mapping.AndroidXMapFragment;
+import com.here.android.mpa.mapping.Map;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +30,51 @@ public class MainActivity extends AppCompatActivity {
     private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
+    private AndroidXMapFragment mapFragment = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermissions();
+        initialize();
     }
+
+    public void initialize() {
+        // Search for the Map Fragment
+        final AndroidXMapFragment mapFragment = (AndroidXMapFragment)
+                getSupportFragmentManager().findFragmentById(R.id.mapfragment);
+
+        boolean success = com.here.android.mpa.common.MapSettings.setIsolatedDiskCacheRootPath(
+                getApplicationContext().getExternalFilesDir(null) + File.separator + ".here-maps",
+                "com.example.sustainabilityapp.MapService");
+
+        if(!success) {
+            // Setting the isolated disk cache was not successful, please check if the path is valid and
+            // ensure that it does not match the default location
+            // (getExternalStorageDirectory()/.here-maps).
+            // Also, ensure the provided intent name does not match the default intent name.
+        } else {
+            // Initialize the Map Fragment and
+            // retrieve the map that is associated to the fragment
+            mapFragment.init(new OnEngineInitListener() {
+                @Override
+                public void onEngineInitializationCompleted(Error error) {
+                    if (error == Error.NONE) {
+                        Map map = mapFragment.getMap();
+
+                        // Set the map center to Vancouver, Canada.
+                        map.setCenter(new GeoCoordinate(49.196261,
+                                -123.004773), Map.Animation.NONE);
+
+                    } else {
+                        System.out.println("ERROR: Cannot initialize AndroidXMapFragment");
+                    }
+                }
+            });
+        }
+    }
+
 
     /**
      * Checks the dynamically controlled permissions and requests missing permissions from end user.
@@ -73,6 +118,4 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-
 }
