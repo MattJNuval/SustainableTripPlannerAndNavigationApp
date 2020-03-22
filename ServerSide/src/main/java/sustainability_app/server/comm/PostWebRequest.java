@@ -4,18 +4,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import org.apache.http.client.utils.URIBuilder;
 
 public final class PostWebRequest
     extends AbstractWebRequest {
-    public PostWebRequest(String urlString, String contentType)
+    
+    public PostWebRequest(final URL url, final String contentType)
             throws MalformedURLException, IOException {
-        super(urlString, "POST");
+        super(url, "POST");
         conn.setRequestProperty("Content-Type", contentType);
     }
-    
-    public PostWebRequest(StringBuilder urlString, String contentType)
-            throws MalformedURLException, IOException {
-        this(urlString.toString(), contentType);
+
+    public PostWebRequest(final URIBuilder urlBuilder, final String contentType)
+            throws MalformedURLException, IOException, URISyntaxException {
+        super(urlBuilder, "POST");
+        conn.setRequestProperty("Content-Type", contentType);
     }
     
     public PostWebRequest write(String input)
@@ -27,8 +32,7 @@ public final class PostWebRequest
     }
     
     @Override
-    public String read()
-            throws IOException {
+    public String read() throws IOException {
         if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
             throw new IOException("Failed, HTTP error code: "
                     + conn.getResponseCode());

@@ -26,7 +26,8 @@ public final class ServerClientCommunication {
         private final DataOutputStream dos;
         private final Socket socket;
         
-        public ClientThread(final Socket socket, final DataInputStream dis, final DataOutputStream dos) {
+        public ClientThread(final Socket socket,
+                final DataInputStream dis, final DataOutputStream dos) {
             this.dis = dis;
             this.dos = dos;
             this.socket = socket;
