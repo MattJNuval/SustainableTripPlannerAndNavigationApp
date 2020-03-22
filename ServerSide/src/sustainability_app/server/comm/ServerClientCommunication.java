@@ -68,7 +68,7 @@ public final class ServerClientCommunication {
         }
     }
     
-    public ServerCommunication close()
+    public ServerClientCommunication close()
             throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
@@ -76,7 +76,7 @@ public final class ServerClientCommunication {
         return this;
     }
     
-    public ServerCommunication listen()
+    public ServerClientCommunication listen()
             throws IOException {
         if (serverSocket != null) {
             final Socket clientSocket = serverSocket.accept();
