@@ -3,14 +3,13 @@ package sustainability_app.server;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import sustainability_app.server.comm.ServerCommunication;
+import sustainability_app.server.comm.ServerClientCommunication;
 
 public class Driver {
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
-    private ServerCommunication serverCommunication;
+    private ServerClientCommunication serverClientCommunication;
     
     public Driver() { }
     
@@ -25,16 +24,16 @@ public class Driver {
             final Driver driver = new Driver();
             
             try {
-                driver.serverCommunication = new ServerCommunication(portNumber);
+                driver.serverClientCommunication = new ServerClientCommunication(portNumber);
                 LOGGER.log(Level.INFO, "Ready");
                 while (true) {
-                    driver.serverCommunication.listen();
+                    driver.serverClientCommunication.listen();
                 }
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Server error.", e);
             } finally {
                 try {
-                    driver.serverCommunication.close();
+                    driver.serverClientCommunication.close();
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Could not close server.", e);
                 }

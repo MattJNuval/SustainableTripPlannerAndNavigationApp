@@ -8,13 +8,13 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class ServerCommunication {
+public final class ServerClientCommunication {
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
     private final ServerSocket serverSocket;
 
-    public ServerCommunication(final int portNumber)
+    public ServerClientCommunication(final int portNumber)
             throws IOException {
         serverSocket = new ServerSocket(portNumber);
         serverSocket.setSoTimeout(0);
