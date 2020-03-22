@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sustainabilityapp">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +22,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data android:name="com.here.android.maps.appid"
+            android:value="rhzgfPpYzyruaSQ6FLJO"/>
+        <meta-data android:name="com.here.android.maps.apptoken"
+            android:value="CRAHwuXcd5OPhYXAHAmJ1g"/>
+        <meta-data android:name="com.here.android.maps.license.key"
+            android:value="L1qQYWmSntg6QK47AFBHRCYfYC2vC/uoilC7WIr7H1YuO9UUlHPBb6G91LkhU0nYI8YHZn9u2vwZ0ZFFWXshckiPxt6dmlfL/8BwjIyKavoNOQEGf0kBYfX0hBu7LfOpl81gq4oAHisA6iItbqco2LQ0IMT/XFl2+OFTlqqNShW3gH6YXvpgw4RR8/t6BGfYcUbIuqzfYYdkTqiPeHdRZSqSWztB6KdIlNz2fK8RhZXyc9nzwKpH+Er7ZV9dNo0GlXo+XmhIbJJ1/6td8TSNlRu7q6U2vK2wlVloUFBM3F1DrPJop9JRgdYfrQ22h96WISHPhZ1dRVeqgeCRngD8gnVcerKqGm8Ht42TmU2g0BafN9ioOC5Biu0ZPzjwasJQ3k1AO9ipffL9kFpOO1VweD9fWD0fLf5PlPCFyBpjAZMtU47dc6KEEZH4k0hDyq7Lo9XidA6ao4SX5kYALw0reNW9YuPO7G4p32wm6/fPAtSjwZ/6+/hkri9Wd89qw8H3j82O6RnaEmQgrILFSv0DWSZTU/iQUt5QDu0eC3Q4zvGNqyutuQm0iU3LFIJdJRKJyudg0MfnoOkuuVOXtEsqt8xdPEkhV4dUzYQsa3lXPvBek4gigGYPBZrSk8y5x5mxpNOGIOmV7954hGYTCtNVfAeNMsuN90ErM3lFn4ecZDs="/>
+
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="{YOUR_LABEL_NAME}"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="{YOUR_INTENT_NAME}">
+                </action>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
