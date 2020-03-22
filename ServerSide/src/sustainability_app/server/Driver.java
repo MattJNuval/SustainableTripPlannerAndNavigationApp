@@ -1,6 +1,10 @@
+package sustainability_app.server;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import sustainability_app.server.comm.ServerCommunication;
 
 public class Driver {
     private final static Logger LOGGER =

@@ -1,3 +1,5 @@
+package sustainability_app.server.comm;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
