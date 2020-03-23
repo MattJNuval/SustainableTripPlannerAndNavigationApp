@@ -8,11 +8,10 @@ import sustainability_app.server.comm.GetWebRequest;
 import sustainability_app.server.comm.PostWebRequest;
 
 public abstract class APIWebRequest {
-    private URIBuilder urlBuilder;
+    protected URIBuilder urlBuilder;
     
     protected APIWebRequest(final String baseUrl, final String apiKey) throws URISyntaxException {
         urlBuilder = new URIBuilder(baseUrl);
-        urlBuilder.addParameter("apiKey", apiKey);
     }
     
     public APIWebRequest addParameter(final String apiKey, final String value) {

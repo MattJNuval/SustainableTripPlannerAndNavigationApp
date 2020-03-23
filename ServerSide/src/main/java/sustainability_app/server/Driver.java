@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
+
 import org.json.JSONException;
+
 import sustainability_app.server.comm.ServerClientCommunication;
-import sustainability_app.server.here_api.HereRoute;
+import sustainability_app.server.here_api.HERERoute;
 
 public class Driver {
     private final static String AIR_VISUAL_API_KEY =
@@ -54,9 +56,8 @@ public class Driver {
         
         // Testing HERE API
         try {
-            final HereRoute routeTest = new HereRoute(HERE_API_KEY, "52.5308,13.3847",
+            final HERERoute routeTest = new HERERoute(HERE_API_KEY, "52.5308,13.3847",
                     "52.5323,13.3789", HERE_TRANSPORT_MODE, HERE_ALTERNATIVES, "polyline");
-            routeTest.route(1);
             // Get from route 0 (up to 6 routes?), section 0 (not sure how many sections there are)
             System.out.println(routeTest.polyline(0, 0));
         } catch (JSONException e) {

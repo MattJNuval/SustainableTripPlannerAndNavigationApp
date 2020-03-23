@@ -11,22 +11,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public final class HereRoute {
+public final class HERERoute {
     private final JSONObject answer;
     
-    public HereRoute(final String API_KEY, final String origin,
+    public HERERoute(final String API_KEY, final String origin,
             final String destination, final String transportMode,
             final String alternatives,  final String returnType)
         throws JSONException, MalformedURLException, IOException, URISyntaxException {
-        final HereRequest hereRequest = new HereRequest(API_KEY);
+        /*final HERERequest hereRequest = new HERERequest(API_KEY);
         hereRequest.addParameter("origin", origin);
         hereRequest.addParameter("destination", destination);
         hereRequest.addParameter("transportMode", transportMode);
         hereRequest.addParameter("alternatives", alternatives);
         hereRequest.addParameter("return", returnType);
-        final JSONTokener tokener = new JSONTokener(hereRequest.get().read());
+        final JSONTokener tokener = new JSONTokener(hereRequest.get().read());*/
         
-        //final JSONTokener tokener = new JSONTokener("{\"routes\":[{\"id\":\"42af46d9-785b-458d-b39f-2d4ff03293aa\",\"sections\":[{\"id\":\"3198e40a-89e4-408e-98db-c50f68d271ba\",\"type\":\"vehicle\",\"departure\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5309837,\"lng\":13.384567,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5307999,\"lng\":13.3847}}},\"arrival\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5323264,\"lng\":13.378874,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5323,\"lng\":13.3789}}},\"polyline\":\"BGwynmkDu39wZvBtF3InfvHrdvHvboGzF0FnGoGvHsOvR8L3NkSnVoGjIsEzFgFvHkDrJwHrJwHrJ4NjS0ezoBjInV3N_iBzJ_Z\",\"transport\":{\"mode\":\"truck\"}}]}]}");
+        final JSONTokener tokener = new JSONTokener("{\"routes\":[{\"id\":\"42af46d9-785b-458d-b39f-2d4ff03293aa\",\"sections\":[{\"id\":\"3198e40a-89e4-408e-98db-c50f68d271ba\",\"type\":\"vehicle\",\"departure\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5309837,\"lng\":13.384567,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5307999,\"lng\":13.3847}}},\"arrival\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5323264,\"lng\":13.378874,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5323,\"lng\":13.3789}}},\"polyline\":\"BGwynmkDu39wZvBtF3InfvHrdvHvboGzF0FnGoGvHsOvR8L3NkSnVoGjIsEzFgFvHkDrJwHrJwHrJ4NjS0ezoBjInV3N_iBzJ_Z\",\"transport\":{\"mode\":\"truck\"}}]}]}");
         
         answer = new JSONObject(tokener);
     }
