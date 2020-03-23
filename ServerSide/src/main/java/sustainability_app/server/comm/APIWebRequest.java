@@ -9,12 +9,12 @@ import org.apache.http.client.utils.URIBuilder;
 public abstract class APIWebRequest {
     protected URIBuilder urlBuilder;
     
-    protected APIWebRequest(final String baseUrl, final String apiKey) throws URISyntaxException {
+    protected APIWebRequest(final String baseUrl) throws URISyntaxException {
         urlBuilder = new URIBuilder(baseUrl);
     }
     
-    public APIWebRequest addParameter(final String apiKey, final String value) {
-        urlBuilder.addParameter(apiKey, value);
+    public APIWebRequest addParameter(final String key, final String value) {
+        urlBuilder.addParameter(key, value);
         return this;
     }
     

@@ -8,7 +8,7 @@ public final class HERERequest extends APIWebRequest {
     private final static String BASE_URL = "https://router.hereapi.com/v8/routes";
 
     public HERERequest(final String apiKey) throws URISyntaxException {
-        super(BASE_URL, apiKey);
+        super(BASE_URL);
         urlBuilder.addParameter("apiKey", apiKey);
     }
 }

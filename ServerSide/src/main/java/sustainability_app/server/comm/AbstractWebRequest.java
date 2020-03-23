@@ -12,10 +12,9 @@ import java.util.logging.Logger;
 
 import org.apache.http.client.utils.URIBuilder;
 
-public abstract class AbstractWebRequest {
-    private final static Logger LOGGER =
-            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    
+import sustainability_app.server.Driver;
+
+public abstract class AbstractWebRequest {    
     private final URL url;
     protected final HttpURLConnection conn;
 
@@ -26,7 +25,7 @@ public abstract class AbstractWebRequest {
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
         
-        LOGGER.log(Level.INFO, "Server opening connection to " + url.toString());
+        Driver.LOGGER.log(Level.INFO, "Server opening connection to " + url.toString());
     }
     
     protected AbstractWebRequest(final URIBuilder urlBuilder, final String method)
@@ -45,7 +44,7 @@ public abstract class AbstractWebRequest {
             clearOutput += output;
         }
         
-        LOGGER.log(Level.INFO, "Server recieved output from " + url.toString() + ":\n" + clearOutput);
+        Driver.LOGGER.log(Level.INFO, "Server recieved output from " + url.toString() + ":\n" + clearOutput);
         
         br.close();
         conn.disconnect();

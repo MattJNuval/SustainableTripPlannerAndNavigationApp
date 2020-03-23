@@ -5,13 +5,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class ServerClientCommunication {
-    private final static Logger LOGGER =
-            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
+
+import sustainability_app.server.Driver;
+import sustainability_app.server.here_api.HERERoute;
+
+public final class ServerClientCommunication {    
     private final ServerSocket serverSocket;
 
     public ServerClientCommunication(final int portNumber)
@@ -39,21 +46,65 @@ public final class ServerClientCommunication {
                 while (true) {
                     try {
                         final String received = dis.readUTF();
-                        String toReturn = null;
-                        LOGGER.log(Level.INFO, "Client " + socket + " said: " + received);
-                        if (received.equals("Exit"))
-                        {
+                        final JSONObject toReturnJSON = new JSONObject();
+                        Driver.LOGGER.log(Level.INFO, "Client " + socket + " sent " + received);
+                        
+                        final JSONTokener tokener = new JSONTokener(received);
+                        final JSONObject answer = new JSONObject(tokener);
+                        
+                        final String command = answer.getString("client-command");
+                        
+                        if (command.equals("exit")) {
                             socket.close();
-                            LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
+                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
                             break;
                         }
-                        else if (received.equals("Ping")) {
-                            toReturn = "Pong";
-                            LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
-                            dos.writeUTF(toReturn);
+                        else if (command.equals("ping")) {
+                            toReturnJSON.put("server-command", "pong");
+                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
+                            dos.writeUTF(toReturnJSON.toString());
                         }
+                        else if (command.equals("route")) {
+                            final String originLat = answer.getString("originLat");
+                            final String originLon = answer.getString("originLon");
+                            final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
+                            final String destinationLat = answer.getString("destinationLat");
+                            final String destinationLon = answer.getString("destinationLon");
+                            final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
+                            
+                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
+                            + origin + " to " + destination);
+
+                            Driver.LOGGER.log(Level.INFO, "Will try tp send to client a " + Driver.HERE_TRANSPORT_MODE
+                                    + " route " + " with " + Driver.HERE_ALTERNATIVES + " alternative routes.");
+                            
+                            // This is where things get tricky.
+                            // 1. Get all possible routes.
+                            // 2. Put all route coordinates in their own hashmaps.
+                            // 3. Get air pollution from each route coordinate.
+                            // 4. Sum all the hashmaps.
+                            // 5. Label best hashmap.
+                            
+                            // TODO: Add truck information.
+                            
+                            final HERERoute routeTest = new HERERoute(Driver.HERE_API_KEY, origin,
+                                    destination, Driver.HERE_TRANSPORT_MODE,
+                                    Driver.HERE_ALTERNATIVES, "polyline");
+                            
+                            toReturnJSON.put("server-command", "route-give");
+                            dos.writeUTF(toReturnJSON.toString());
+                        }
+                        
+                        Driver.LOGGER.log(Level.INFO, "Sending to client " + socket
+                                + ": " + toReturnJSON.toString());
+                    } catch (NumberFormatException e) {
+                        Driver.LOGGER.log(Level.WARNING, "Client sent a bad formatted message.", e);
+                    } catch (JSONException e) {
+                        Driver.LOGGER.log(Level.WARNING, "Client sent a bad formatted message.", e);
+                    } catch (URISyntaxException e) {
+                        Driver.LOGGER.log(Level.WARNING, "URI has internal error.", e);
                     } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Client connection error.", e);
+                        Driver.LOGGER.log(Level.WARNING, "Client connection error.", e);
                         break;
                     }
                 }
@@ -63,7 +114,7 @@ public final class ServerClientCommunication {
                     dis.close();
                     dos.close();
                 } catch (IOException e) {
-                    LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
+                    Driver.LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
                 } 
             }   
         }

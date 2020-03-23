@@ -8,20 +8,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import sustainability_app.server.Coordinates;
+import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
 public class AirVisualAQI {
     private final JSONObject answer;
     
-    public AirVisualAQI(final String API_KEY, final Coordinates coords)
+    public AirVisualAQI(final String API_KEY, final LatLngZ coords)
             throws JSONException, MalformedURLException,
             IOException, URISyntaxException {
         final AirVisualRequest airVisualRequest = new AirVisualRequest(API_KEY);
-        airVisualRequest.addParameter("lat", coords.lat);
-        airVisualRequest.addParameter("lon", coords.lon);
+        airVisualRequest.addParameter("lat", "" + coords.lat);
+        airVisualRequest.addParameter("lon", "" + coords.lng);
         final JSONTokener tokener = new JSONTokener(airVisualRequest.get().read());
 
         answer = new JSONObject(tokener);
-        System.out.println(answer);
+    }
+    
+    public Number AQIUS() throws JSONException {
+        return pollution().getNumber("aqius");
+    }
+    
+    public JSONObject current() throws JSONException {
+        return data().getJSONObject("current");
+    }
+    
+    public JSONObject data() throws JSONException {
+        return answer.getJSONObject("data");
+    }
+    
+    public JSONObject pollution() {
+        return current().getJSONObject("pollution");
     }
 }
