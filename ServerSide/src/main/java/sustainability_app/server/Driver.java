@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
 import sustainability_app.server.comm.ServerClientCommunication;
-import sustainability_app.server.here_api.HereRequest;
 import sustainability_app.server.here_api.HereRoute;
 
 public class Driver {
