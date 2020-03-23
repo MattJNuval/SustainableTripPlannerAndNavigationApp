@@ -17,7 +17,7 @@ public final class AirVisualRequest {
         urlBuilder.addParameter("apiKey", apiKey);
     }
     
-    public AirVisualRequest addQuery(final String apiKey, final String value) {
+    public AirVisualRequest addParameter(final String apiKey, final String value) {
         urlBuilder.addParameter(apiKey, value);
         return this;
     }
