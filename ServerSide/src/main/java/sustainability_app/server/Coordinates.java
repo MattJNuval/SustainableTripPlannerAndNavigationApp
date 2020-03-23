@@ -5,8 +5,16 @@ public class Coordinates {
     public String lon;
     public String z;
     
+    public Coordinates(final double lat, final double lon) {
+        this("" + lat, "" + lon);
+    }
+    
     public Coordinates(final String lat, final String lon) {
         this(lat, lon, "0.0");
+    }
+    
+    public Coordinates(final double lat, final double lon, final double z) {
+        this("" + lat, "" + lon, "" + z);
     }
     
     public Coordinates(final String lat, final String lon, final String z) {

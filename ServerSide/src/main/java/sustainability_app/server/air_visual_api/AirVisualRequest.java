@@ -1,6 +1,7 @@
 package sustainability_app.server.air_visual_api;
 
 import java.net.URISyntaxException;
+
 import sustainability_app.server.comm.APIWebRequest;
 
 public final class AirVisualRequest extends APIWebRequest {

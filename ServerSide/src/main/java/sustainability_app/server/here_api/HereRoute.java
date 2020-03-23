@@ -1,26 +1,30 @@
 package sustainability_app.server.here_api;
 
-import com.here.flexpolyline.PolylineEncoderDecoder;
-import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.here.flexpolyline.PolylineEncoderDecoder;
+import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
+
+import sustainability_app.server.Coordinates;
+
 public final class HERERoute {
     private final JSONObject answer;
     
-    public HERERoute(final String API_KEY, final String origin,
-            final String destination, final String transportMode,
+    public HERERoute(final String API_KEY, final Coordinates origin,
+            final Coordinates destination, final String transportMode,
             final String alternatives,  final String returnType)
         throws JSONException, MalformedURLException, IOException, URISyntaxException {
         /*final HERERequest hereRequest = new HERERequest(API_KEY);
-        hereRequest.addParameter("origin", origin);
-        hereRequest.addParameter("destination", destination);
+        hereRequest.addParameter("origin", origin.toString2D());
+        hereRequest.addParameter("destination", destination.toString2D());
         hereRequest.addParameter("transportMode", transportMode);
         hereRequest.addParameter("alternatives", alternatives);
         hereRequest.addParameter("return", returnType);

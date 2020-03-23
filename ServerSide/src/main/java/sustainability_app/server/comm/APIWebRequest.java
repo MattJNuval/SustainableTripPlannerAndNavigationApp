@@ -3,9 +3,8 @@ package sustainability_app.server.comm;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+
 import org.apache.http.client.utils.URIBuilder;
-import sustainability_app.server.comm.GetWebRequest;
-import sustainability_app.server.comm.PostWebRequest;
 
 public abstract class APIWebRequest {
     protected URIBuilder urlBuilder;

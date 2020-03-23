@@ -56,8 +56,10 @@ public class Driver {
         
         // Testing HERE API
         try {
-            final HERERoute routeTest = new HERERoute(HERE_API_KEY, "52.5308,13.3847",
-                    "52.5323,13.3789", HERE_TRANSPORT_MODE, HERE_ALTERNATIVES, "polyline");
+            final Coordinates originTest = new Coordinates(52.5308, 13.3847);
+            final Coordinates destinationTest = new Coordinates(52.5323, 13.3789);
+            final HERERoute routeTest = new HERERoute(HERE_API_KEY, originTest,
+                    destinationTest, HERE_TRANSPORT_MODE, HERE_ALTERNATIVES, "polyline");
             // Get from route 0 (up to 6 routes?), section 0 (not sure how many sections there are)
             System.out.println(routeTest.polyline(0, 0));
         } catch (JSONException e) {
