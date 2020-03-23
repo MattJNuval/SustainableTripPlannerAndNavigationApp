@@ -1,3 +1,5 @@
+package sustainability_app.server.comm;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -6,13 +8,13 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class ServerCommunication {
+public final class ServerClientCommunication {
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
     private final ServerSocket serverSocket;
 
-    public ServerCommunication(final int portNumber)
+    public ServerClientCommunication(final int portNumber)
             throws IOException {
         serverSocket = new ServerSocket(portNumber);
         serverSocket.setSoTimeout(0);
@@ -24,7 +26,8 @@ public final class ServerCommunication {
         private final DataOutputStream dos;
         private final Socket socket;
         
-        public ClientThread(final Socket socket, final DataInputStream dis, final DataOutputStream dos) {
+        public ClientThread(final Socket socket,
+                final DataInputStream dis, final DataOutputStream dos) {
             this.dis = dis;
             this.dos = dos;
             this.socket = socket;
@@ -66,7 +69,7 @@ public final class ServerCommunication {
         }
     }
     
-    public ServerCommunication close()
+    public ServerClientCommunication close()
             throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
@@ -74,7 +77,7 @@ public final class ServerCommunication {
         return this;
     }
     
-    public ServerCommunication listen()
+    public ServerClientCommunication listen()
             throws IOException {
         if (serverSocket != null) {
             final Socket clientSocket = serverSocket.accept();
