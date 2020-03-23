@@ -1,5 +1,7 @@
 package sustainability_app.server.here_api;
 
+import com.here.flexpolyline.PolylineEncoderDecoder;
+import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -7,9 +9,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import com.here.flexpolyline.PolylineEncoderDecoder;
-import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
 public final class HereRoute {
     private final JSONObject answer;

@@ -8,6 +8,8 @@ import sustainability_app.server.comm.ServerClientCommunication;
 import sustainability_app.server.here_api.HereRoute;
 
 public class Driver {
+    private final static String AIR_VISUAL_API_KEY =
+            "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
     private final static String HERE_API_KEY =
             "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
     private final static String HERE_TRANSPORT_MODE = "truck";
