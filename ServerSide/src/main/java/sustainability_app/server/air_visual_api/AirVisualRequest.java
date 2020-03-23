@@ -1,4 +1,4 @@
-package sustainability_app.server.here_api;
+package sustainability_app.server.air_visual_api;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -7,17 +7,17 @@ import org.apache.http.client.utils.URIBuilder;
 import sustainability_app.server.comm.GetWebRequest;
 import sustainability_app.server.comm.PostWebRequest;
 
-public final class HereRequest {
-    private final static String BASE_URL = "https://router.hereapi.com/v8/routes";
+public final class AirVisualRequest {
+    private final static String BASE_URL = "";
 
     private URIBuilder urlBuilder;
     
-    public HereRequest(final String apiKey) throws URISyntaxException {
+    public AirVisualRequest(final String apiKey) throws URISyntaxException {
         urlBuilder = new URIBuilder(BASE_URL);
         urlBuilder.addParameter("apiKey", apiKey);
     }
     
-    public HereRequest addParameter(final String apiKey, final String value) {
+    public AirVisualRequest addQuery(final String apiKey, final String value) {
         urlBuilder.addParameter(apiKey, value);
         return this;
     }
