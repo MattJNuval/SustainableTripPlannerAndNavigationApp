@@ -59,15 +59,7 @@ public class Driver {
         
         // Testing HERE API
         try {
-            final LatLngZ originTest = new LatLngZ(52.5308, 13.3847);
-            final LatLngZ destinationTest = new LatLngZ(52.5323, 13.3789);
-            final HERERoute routeTest = new HERERoute(HERE_API_KEY, originTest,
-                    destinationTest, HERE_TRANSPORT_MODE, HERE_ALTERNATIVES, "polyline");
-            // Get from route 0 (up to 6 routes?), section 0 (not sure how many sections there are)
-            final LatLngZ coordinatesTest = routeTest.polyline(0, 0).get(0);
-            final LatLngZ coordinatesTest2 = new LatLngZ(34.939443, 29.531814);
-            final AirVisualAQI aqiTest = new AirVisualAQI(AIR_VISUAL_API_KEY, coordinatesTest);
-            System.out.println(aqiTest.AQIUS());
+
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
