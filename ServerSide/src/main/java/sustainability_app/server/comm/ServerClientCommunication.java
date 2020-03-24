@@ -58,7 +58,7 @@ public final class ServerClientCommunication {
                         final JSONTokener tokener = new JSONTokener(received);
                         final JSONObject answer = new JSONObject(tokener);
                         
-                        final String command = answer.getString("client-command");
+                        final String command = answer.getString("clientCommand");
                         
                         if (command.equals("exit")) {
                             socket.close();
@@ -66,12 +66,12 @@ public final class ServerClientCommunication {
                             break;
                         }
                         else if (command.equals("ping")) {
-                            toReturnJSON.put("server-command", "pong");
+                            toReturnJSON.put("serverCommand", "pong");
                             Driver.LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
                             dos.writeUTF(toReturnJSON.toString());
                         }
                         else if (command.equals("route")) {
-                            toReturnJSON.put("server-command", "route-give");
+                            toReturnJSON.put("serverCommand", "route-give");
                             final String originLat = answer.getString("originLat");
                             toReturnJSON.put("originLat", originLat);
                             final String originLon = answer.getString("originLon");
@@ -84,9 +84,9 @@ public final class ServerClientCommunication {
                             Driver.LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
                             + origin + " to " + destination);
 
-                            Driver.LOGGER.log(Level.INFO, "Will try to send to client " + socket + " a "
-                            + Driver.HERE_TRANSPORT_MODE + " route " + " with "
-                                    + Driver.HERE_ALTERNATIVES + " alternative routes.");
+                            Driver.LOGGER.log(Level.INFO, "Will try to send to client " + socket
+                                    + " " + Driver.HERE_ALTERNATIVES + " " 
+                                    + Driver.HERE_TRANSPORT_MODE + " routes.");
                             
                             // This is where things get tricky.
                             // 1. Get all possible routes.
@@ -107,26 +107,29 @@ public final class ServerClientCommunication {
                             JSONObject leastPollutedRoute = null;
                             double lastAqi = 0;
                             
-                            for (int i = 0; i <= routeFetch.routeArray().length(); i++) {
+                            for (int i = 0; i < routeFetch.routeArray().length(); i++) {
                                 final JSONObject routeJSON = new JSONObject();
                                 final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
                                 double totalRouteAqi = 0;                        
-                                for (int j = 0; i <= polyline.size(); j++) {
+                                for (int j = 0; j < polyline.size(); j++) {
                                     final LatLngZ coordinate = polyline.get(j);
-                                    
                                     final JSONObject coordinateJSON = new JSONObject();
                                     coordinateJSON.put("lat", coordinate.lat);
                                     coordinateJSON.put("lon", coordinate.lng);
                                     coordinateJSON.put("z", coordinate.z);
-                                    
-                                    final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
-                                            coordinate);
-                                    
-                                    coordinateJSON.put("aqi", aqiFetch.AQIUS());
-                                    
-                                    routeJSON.put("C" + j, coordinateJSON);
-                                    
-                                    totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                                    try {
+                                        final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
+                                                coordinate);
+                                        
+                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                        
+                                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                                    } catch (IOException e) {
+                                        Driver.LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
+                                                + "substituting with zero.", e);
+                                        coordinateJSON.put("aqi", 0);  
+                                    }
+                                    routeJSON.put("c" + j, coordinateJSON);
+                                    Thread.sleep(5000);
                                 }
                                 
                                 routeJSON.put("totalRouteAqi", totalRouteAqi);
@@ -136,10 +139,10 @@ public final class ServerClientCommunication {
                                     lastAqi = totalRouteAqi;
                                 }
                                 
-                                toReturnJSON.put("R" + i, routeJSON);
+                                toReturnJSON.put("route" + i, routeJSON);
                             }
                             
-                            toReturnJSON.put("LeastAqiRoute", leastPollutedRoute);
+                            toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
                             dos.writeUTF(toReturnJSON.toString());
                         }
                         
@@ -150,10 +153,12 @@ public final class ServerClientCommunication {
                     } catch (JSONException e) {
                         Driver.LOGGER.log(Level.WARNING, "Client " + socket + " sent a bad formatted message.", e);
                     } catch (URISyntaxException e) {
-                        Driver.LOGGER.log(Level.WARNING, "URI has internal error.", e);
+                        Driver.LOGGER.log(Level.WARNING, "URI has a bad format.", e);
                     } catch (IOException e) {
-                        Driver.LOGGER.log(Level.WARNING, "Client " + socket + " connection error.", e);
+                        Driver.LOGGER.log(Level.SEVERE, "Client " + socket + " connection error.", e);
                         break;
+                    } catch (InterruptedException e) {
+                        Driver.LOGGER.log(Level.WARNING, "Thread interrupted.", e);
                     }
                 }
                 
