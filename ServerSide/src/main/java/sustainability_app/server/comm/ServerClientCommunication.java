@@ -31,7 +31,7 @@ public final class ServerClientCommunication {
         serverSocket.setSoTimeout(0);
     }
     
-    protected final class ClientThread
+    private final class ClientThread
         extends Thread {
         private final DataInputStream dis; 
         private final DataOutputStream dos;
