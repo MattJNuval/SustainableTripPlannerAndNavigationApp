@@ -24,7 +24,7 @@ public class Driver {
     
     /**
      * Main entry point. This requires one single argument for the port number in which the server must run.
-     * @param args arguments to be inputted.
+     * @param args {@link String[]} arguments for the application.
      * @throws IllegalArgumentException if no arguments are inputted.
      */
     public static void main(final String[] args) throws IllegalArgumentException {
