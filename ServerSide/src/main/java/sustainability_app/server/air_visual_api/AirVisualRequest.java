@@ -9,6 +9,6 @@ public final class AirVisualRequest extends APIWebRequest {
     
     public AirVisualRequest(final String apiKey) throws URISyntaxException {
         super(BASE_URL);
-        urlBuilder.addParameter("key", apiKey);
+        uriBuilder.addParameter("key", apiKey);
     }
 }

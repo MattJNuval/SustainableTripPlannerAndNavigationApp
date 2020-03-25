@@ -9,6 +9,6 @@ public final class HERERequest extends APIWebRequest {
 
     public HERERequest(final String apiKey) throws URISyntaxException {
         super(BASE_URL);
-        urlBuilder.addParameter("apiKey", apiKey);
+        uriBuilder.addParameter("apiKey", apiKey);
     }
 }
