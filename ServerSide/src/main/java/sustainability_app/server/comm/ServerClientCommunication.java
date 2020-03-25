@@ -20,12 +20,20 @@ import sustainability_app.server.Driver;
 import sustainability_app.server.air_visual_api.AirVisualAQI;
 import sustainability_app.server.here_api.HERERoute;
 
+/**
+ * Communication for server and client using sockets.
+ */
 public final class ServerClientCommunication {
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
     private final ServerSocket serverSocket;
 
+    /**
+     * Constructor for a server and client communication.
+     * @param portNumber {@link int} for the port number.
+     * @throws IOException if an IO error occurred.
+     */
     public ServerClientCommunication(final int portNumber)
             throws IOException {
         serverSocket = new ServerSocket(portNumber);
@@ -46,39 +54,50 @@ public final class ServerClientCommunication {
         }
         
         @Override
-        public void run() {
+        public void run() { // Threading for each client.
             if (dis != null && dos != null && socket != null) {
                 while (true) {
                     try {
+                        // Data received from client.
                         final String received = dis.readUTF();
+                        // Data to send to client.
                         final JSONObject toReturnJSON = new JSONObject();
+                        // Time stamp to send to client.
                         toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
                         
                         LOGGER.log(Level.INFO, "Client " + socket + " sent " + received);
                         
                         final JSONTokener tokener = new JSONTokener(received);
+                        // Answer from client.
                         final JSONObject answer = new JSONObject(tokener);
                         
+                        // Command from client.
                         final String command = answer.getString("clientCommand");
                         
-                        if (command.equals("exit")) {
+                        if (command.equals("exit")) { // Client exit command.
                             socket.close();
                             LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
-                            break;
+                            break; // Breaks the connection.
                         }
-                        else if (command.equals("ping")) {
+                        else if (command.equals("ping")) { // Client ping command.
+                            // Command to send to client.
                             toReturnJSON.put("serverCommand", "pong");
                             LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
-                            dos.writeUTF(toReturnJSON.toString());
                         }
-                        else if (command.equals("route-get")) {
+                        else if (command.equals("route-get")) { // Client route-get command.
+                            // Command to send to client.
                             toReturnJSON.put("serverCommand", "route-send");
+                            // Origin latitude to start at.
                             final String originLat = answer.getString("originLat");
                             toReturnJSON.put("originLat", originLat);
+                            // Origin longitude to start at.
                             final String originLon = answer.getString("originLon");
                             toReturnJSON.put("originLon", originLon);
                             final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
+                            
+                            // Destination latitude to end at.
                             final String destinationLat = answer.getString("destinationLat");
+                            // Destination longitude to end at.
                             final String destinationLon = answer.getString("destinationLon");
                             final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
                             
@@ -98,20 +117,20 @@ public final class ServerClientCommunication {
                             
                             // TODO: Add truck information.
                             
-                            final HERERoute routeFetch = new HERERoute(Driver.HERE_API_KEY, origin,
-                                    destination, Driver.HERE_TRANSPORT_MODE,
-                                    Driver.HERE_ALTERNATIVES, "polyline");
-                            
-                            LOGGER.log(Level.INFO, "Will try tp send to client a " + Driver.HERE_TRANSPORT_MODE
-                                    + " route " + " with " + Driver.HERE_ALTERNATIVES + " alternative routes.");
-                            
                             JSONObject leastPollutedRoute = null;
                             double lastAqi = 0;
                             
+                            // Routes from coordinates and their polylines.
+                            final HERERoute routeFetch = new HERERoute(Driver.HERE_API_KEY, origin,
+                                    destination, Driver.HERE_TRANSPORT_MODE,
+                                    Driver.HERE_ALTERNATIVES, "polyline");
+
                             for (int i = 0; i < routeFetch.routeArray().length(); i++) {
                                 final JSONObject routeJSON = new JSONObject();
                                 final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
-                                double totalRouteAqi = 0;                        
+                                double totalRouteAqi = 0;
+                                
+                                // Gets all coordinates from polyline.
                                 for (int j = 0; j < polyline.size(); j++) {
                                     final LatLngZ coordinate = polyline.get(j);
                                     final JSONObject coordinateJSON = new JSONObject();
@@ -119,10 +138,10 @@ public final class ServerClientCommunication {
                                     coordinateJSON.put("lon", coordinate.lng);
                                     coordinateJSON.put("z", coordinate.z);
                                     try {
+                                        // AQIUS from each coordinate.
                                         final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
                                                 coordinate);
-                                        
-                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                        
+                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                   
                                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
                                     } catch (IOException e) {
                                         LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
@@ -130,11 +149,12 @@ public final class ServerClientCommunication {
                                         coordinateJSON.put("aqi", 0);  
                                     }
                                     routeJSON.put("c" + j, coordinateJSON);
-                                    Thread.sleep(5000);
+                                    Thread.sleep(5000); // Prevent as much overhead as possible.
                                 }
                                 
                                 routeJSON.put("totalRouteAqi", totalRouteAqi);
                                 
+                                // Calculate least polluted route.
                                 if (lastAqi == 0 || lastAqi > totalRouteAqi) {
                                     leastPollutedRoute = routeJSON;
                                     lastAqi = totalRouteAqi;
@@ -144,9 +164,9 @@ public final class ServerClientCommunication {
                             }
                             
                             toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
-                            dos.writeUTF(toReturnJSON.toString());
                         }
                         
+                        dos.writeUTF(toReturnJSON.toString());
                         LOGGER.log(Level.INFO, "Sending to client " + socket
                                 + ": " + toReturnJSON.toString());
                     } catch (NumberFormatException e) {
@@ -163,8 +183,7 @@ public final class ServerClientCommunication {
                     }
                 }
                 
-                try
-                {
+                try { // Close connection resources.
                     dis.close();
                     dos.close();
                 } catch (IOException e) {
@@ -174,6 +193,11 @@ public final class ServerClientCommunication {
         }
     }
     
+    /**
+     * Closes the server socket.
+     * @return {@link ServerClientCommunication} of this.
+     * @throws IOException if an IO error occurred.
+     */
     public ServerClientCommunication close()
             throws IOException {
         if (serverSocket != null) {
@@ -182,6 +206,11 @@ public final class ServerClientCommunication {
         return this;
     }
     
+    /**
+     * Listens on server socket.
+     * @return {@link ServerClientCommunication} of this.
+     * @throws IOException if an IO error occurred.
+     */
     public ServerClientCommunication listen()
             throws IOException {
         if (serverSocket != null) {
@@ -195,6 +224,112 @@ public final class ServerClientCommunication {
             t.start();    
         }
         
+        return this;
+    }
+    
+    /**
+     * Testing method.
+     * @return {@link ServerClientCommunication} of this.
+     */
+    public ServerClientCommunication test() {
+        try {
+            // Data to send to client.
+            final JSONObject toReturnJSON = new JSONObject();
+            // Time stamp to send to client.
+            toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
+            toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
+            // Command to send to client.
+            toReturnJSON.put("serverCommand", "route-send");
+            // Origin latitude to start at.
+            final String originLat = "52.53232637420297";
+            toReturnJSON.put("originLat", originLat);
+            // Origin longitude to start at.
+            final String originLon = "13.378873988986015";
+            toReturnJSON.put("originLon", originLon);
+            final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
+            
+            // Destination latitude to end at.
+            final String destinationLat = "52.53098367713392";
+            // Destination longitude to end at.
+            final String destinationLon = "13.384566977620125";
+            final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
+            
+            LOGGER.log(Level.INFO, "Client <TEST> asking for route from "
+            + origin + " to " + destination);
+    
+            LOGGER.log(Level.INFO, "Will try to send to client <TEST> "
+            + Driver.HERE_ALTERNATIVES + " " 
+                    + Driver.HERE_TRANSPORT_MODE + " routes.");
+            
+            // This is where things get tricky.
+            // 1. Get all possible routes.
+            // 2. Put all route coordinates in their own json objects.
+            // 3. Get air pollution from each route coordinate.
+            // 4. Sum all the air pollution from each route.
+            // 5. Label best route.
+            
+            // TODO: Add truck information.
+            
+            JSONObject leastPollutedRoute = null;
+            double lastAqi = 0;
+            
+            // Routes from coordinates and their polylines.
+            final HERERoute routeFetch = new HERERoute(Driver.HERE_API_KEY, origin,
+                    destination, Driver.HERE_TRANSPORT_MODE,
+                    Driver.HERE_ALTERNATIVES, "polyline");
+
+            for (int i = 0; i < routeFetch.routeArray().length(); i++) {
+                final JSONObject routeJSON = new JSONObject();
+                final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
+                double totalRouteAqi = 0;
+                
+                // Gets all coordinates from polyline.
+                for (int j = 0; j < polyline.size(); j++) {
+                    final LatLngZ coordinate = polyline.get(j);
+                    final JSONObject coordinateJSON = new JSONObject();
+                    coordinateJSON.put("lat", coordinate.lat);
+                    coordinateJSON.put("lon", coordinate.lng);
+                    coordinateJSON.put("z", coordinate.z);
+                    try {
+                        // AQIUS from each coordinate.
+                        final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
+                                coordinate);
+                        
+                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                        
+                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
+                                + "substituting with zero.", e);
+                        coordinateJSON.put("aqi", 0);  
+                    }
+                    routeJSON.put("c" + j, coordinateJSON);
+                    Thread.sleep(5000); // Prevent as much overhead as possible.
+                }
+                
+                routeJSON.put("totalRouteAqi", totalRouteAqi);
+                
+                // Calculate least polluted route.
+                if (lastAqi == 0 || lastAqi > totalRouteAqi) {
+                    leastPollutedRoute = routeJSON;
+                    lastAqi = totalRouteAqi;
+                }
+                
+                toReturnJSON.put("route" + i, routeJSON);
+            }
+            
+            toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
+            LOGGER.log(Level.INFO, "Sending to client <TEST>: " + toReturnJSON.toString());
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.WARNING, "Client <TEST> sent a bad formatted message.", e);
+        } catch (JSONException e) {
+            LOGGER.log(Level.WARNING, "Client <TEST> sent a bad formatted message.", e);
+        } catch (URISyntaxException e) {
+            LOGGER.log(Level.WARNING, "URI has a bad format.", e);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Client <TEST> connection error.", e);
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.WARNING, "Thread interrupted.", e);
+        }
         return this;
     }
 }

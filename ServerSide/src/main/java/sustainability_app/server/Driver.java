@@ -20,11 +20,11 @@ public class Driver {
     public final static String HERE_ALTERNATIVES = "6";
 
     /**
-     * Main entry point. This requires one single argument for the port number in which the server must run.
+     * Main entry point. This requires two arguments: one integer number for the port, the other a boolean for testing.
      * @param args {@link String[]} for arguments for the application.
      * @throws IllegalArgumentException if no arguments are inputted.
      */
-    public static void main(final String[] args) throws IllegalArgumentException {
+    public static void main(final String[] args) {
         if (args.length >= 1) {
             final int portNumber = Integer.parseInt(args[0]);
             LOGGER.log(Level.INFO, "CloudJam 2020 Sustainable Trip Planner and Navigation "
@@ -36,8 +36,13 @@ public class Driver {
             try {
                 serverClientCommunication = new ServerClientCommunication(portNumber);
                 LOGGER.log(Level.INFO, "Ready");
-                while (true) {
-                    serverClientCommunication.listen();
+                if (Boolean.parseBoolean(args[1])) { // For testing purposes.
+                    serverClientCommunication.test();
+                }
+                else {
+                    while (true) {
+                        serverClientCommunication.listen(); // Listen on port for socket.
+                    }
                 }
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Server error.", e);
