@@ -10,7 +10,7 @@ import org.json.JSONTokener;
 
 import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
-public class AirVisualAQI {
+public final class AirVisualAQI {
     private final JSONObject answer;
     
     public AirVisualAQI(final String API_KEY, final LatLngZ coords)
