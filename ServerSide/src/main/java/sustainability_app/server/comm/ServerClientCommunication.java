@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;

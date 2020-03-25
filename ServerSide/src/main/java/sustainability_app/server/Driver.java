@@ -1,20 +1,9 @@
 package sustainability_app.server;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
-
-import sustainability_app.server.air_visual_api.AirVisualAQI;
 import sustainability_app.server.comm.ServerClientCommunication;
-import sustainability_app.server.here_api.HERERoute;
 
 public class Driver {
     public final static String AIR_VISUAL_API_KEY =

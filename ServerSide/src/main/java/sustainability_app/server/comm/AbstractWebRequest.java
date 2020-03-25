@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.http.client.utils.URIBuilder;
 

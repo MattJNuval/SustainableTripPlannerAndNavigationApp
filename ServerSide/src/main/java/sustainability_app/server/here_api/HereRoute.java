@@ -26,9 +26,7 @@ public final class HERERoute {
         hereRequest.addParameter("alternatives", alternatives);
         hereRequest.addParameter("return", returnType);
         final JSONTokener tokener = new JSONTokener(hereRequest.get().read());
-        
-        // final JSONTokener tokener = new JSONTokener("{\"routes\":[{\"id\":\"42af46d9-785b-458d-b39f-2d4ff03293aa\",\"sections\":[{\"id\":\"3198e40a-89e4-408e-98db-c50f68d271ba\",\"type\":\"vehicle\",\"departure\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5309837,\"lng\":13.384567,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5307999,\"lng\":13.3847}}},\"arrival\":{\"place\":{\"type\":\"place\",\"location\":{\"lat\":52.5323264,\"lng\":13.378874,\"elv\":0.0},\"originalLocation\":{\"lat\":52.5323,\"lng\":13.3789}}},\"polyline\":\"BGwynmkDu39wZvBtF3InfvHrdvHvboGzF0FnGoGvHsOvR8L3NkSnVoGjIsEzFgFvHkDrJwHrJwHrJ4NjS0ezoBjInV3N_iBzJ_Z\",\"transport\":{\"mode\":\"truck\"}}]}]}");
-        
+
         answer = new JSONObject(tokener);
     }
     
