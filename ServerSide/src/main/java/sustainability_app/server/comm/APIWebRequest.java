@@ -11,17 +11,17 @@ import org.apache.http.client.utils.URIBuilder;
  */
 public abstract class APIWebRequest {
     /**
-     * {@link URIBuilder} for building url.
+     * {@link URIBuilder} for building URI.
      */
-    protected URIBuilder urlBuilder;
+    protected URIBuilder uriBuilder;
     
     /**
      * Constructor for an API web request.
-     * @param baseUrl {@link String} for the API base url.
+     * @param baseURI {@link String} for the API base URI.
      * @throws URISyntaxException.
      */
-    protected APIWebRequest(final String baseUrl) throws URISyntaxException {
-        urlBuilder = new URIBuilder(baseUrl);
+    protected APIWebRequest(final String baseURI) throws URISyntaxException {
+        uriBuilder = new URIBuilder(baseURI);
     }
     
     /**
@@ -31,12 +31,12 @@ public abstract class APIWebRequest {
      * @return {@link APIWebRequest} of this.
      */
     public APIWebRequest addParameter(final String key, final String value) {
-        urlBuilder.addParameter(key, value);
+        uriBuilder.addParameter(key, value);
         return this;
     }
     
     /**
-     * Performs get request on API web request.
+     * Performs GET request on API web request.
      * @return {@link GetWebRequest} for web request.
      * @throws MalformedURLException.
      * @throws IOException.
@@ -44,19 +44,19 @@ public abstract class APIWebRequest {
      */
     public GetWebRequest get() throws MalformedURLException, IOException,
     URISyntaxException {
-        return new GetWebRequest(urlBuilder, "application/json");
+        return new GetWebRequest(uriBuilder.build().toURL(), "application/json");
     }
     
     /**
-     * Performs post request on API web request.
+     * Performs POST request on API web request.
      * @param input {@link String} for the input of the post request.
      * @return {@link GetWebRequest} for web request.
-     * @throws MalformedURLException if url is malformed.
+     * @throws MalformedURLException if URL is malformed.
      * @throws IOException if an IO error occurred.
-     * @throws URISyntaxException if url has a syntax error.
+     * @throws URISyntaxException if URL has a syntax error.
      */
     public PostWebRequest post(final String input) throws MalformedURLException, IOException,
     URISyntaxException {
-        return new PostWebRequest(urlBuilder, "application/json").write(input);
+        return new PostWebRequest(uriBuilder.build().toURL(), "application/json").write(input);
     }
 }

@@ -4,13 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.http.client.utils.URIBuilder;
 
 /**
  * Abstraction for a web request including reading and outputting to web routes.
@@ -30,30 +26,16 @@ public abstract class AbstractWebRequest {
      * Constructor for a web request using a {@link URL}.
      * @param url {@link URL} for the web request.
      * @param method {@link String} for the web request.
-     * @throws MalformedURLException if url is malformed.
      * @throws IOException if an IO error occurred.
      */
-    protected AbstractWebRequest(final URL url, final String method)
-            throws MalformedURLException, IOException {
+    protected AbstractWebRequest(final URL url, final String method) throws IOException {
         this.url = url;
+        // Establishes a connection.
         conn = (HttpURLConnection)url.openConnection();
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
         
         LOGGER.log(Level.INFO, "Server opening connection to " + url.toString());
-    }
-    
-    /**
-     * Constructor for a web requesting using a {@link URIBuilder}.
-     * @param urlBuilder {@link URIBuilder} for the web request.
-     * @param method {@link String} for the web request.
-     * @throws MalformedURLException if url is malformed.
-     * @throws IOException if an IO error occurred.
-     * @throws URISyntaxException if url has a syntax error.
-     */
-    protected AbstractWebRequest(final URIBuilder urlBuilder, final String method)
-            throws MalformedURLException, IOException, URISyntaxException {
-        this(urlBuilder.build().toURL(), method);
     }
     
     /**
