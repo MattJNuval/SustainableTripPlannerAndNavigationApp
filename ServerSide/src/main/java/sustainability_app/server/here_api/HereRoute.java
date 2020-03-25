@@ -20,12 +20,12 @@ public final class HERERoute {
             final String alternatives,  final String returnType)
         throws JSONException, IOException, URISyntaxException {
         final HERERequest hereRequest = new HERERequest(API_KEY);
-        hereRequest.addParameter("origin", origin.lat + "," + origin.lng);
-        hereRequest.addParameter("destination", destination.lat + "," + destination.lng);
-        hereRequest.addParameter("transportMode", transportMode);
-        hereRequest.addParameter("alternatives", alternatives);
-        hereRequest.addParameter("return", returnType);
-        final JSONTokener tokener = new JSONTokener(hereRequest.get().read());
+        hereRequest.addParameter("origin", origin.lat + "," + origin.lng)
+        .addParameter("destination", destination.lat + "," + destination.lng)
+        .addParameter("transportMode", transportMode)
+        .addParameter("alternatives", alternatives)
+        .addParameter("return", returnType);
+        final JSONTokener tokener = new JSONTokener(hereRequest.get().readResponse());
 
         answer = new JSONObject(tokener);
     }

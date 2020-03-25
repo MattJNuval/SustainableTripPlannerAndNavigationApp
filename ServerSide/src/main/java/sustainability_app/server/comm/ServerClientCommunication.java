@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +20,10 @@ import sustainability_app.server.Driver;
 import sustainability_app.server.air_visual_api.AirVisualAQI;
 import sustainability_app.server.here_api.HERERoute;
 
-public final class ServerClientCommunication {    
+public final class ServerClientCommunication {
+    private final static Logger LOGGER =
+            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    
     private final ServerSocket serverSocket;
 
     public ServerClientCommunication(final int portNumber)
@@ -50,7 +54,7 @@ public final class ServerClientCommunication {
                         final JSONObject toReturnJSON = new JSONObject();
                         toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
                         
-                        Driver.LOGGER.log(Level.INFO, "Client " + socket + " sent " + received);
+                        LOGGER.log(Level.INFO, "Client " + socket + " sent " + received);
                         
                         final JSONTokener tokener = new JSONTokener(received);
                         final JSONObject answer = new JSONObject(tokener);
@@ -59,12 +63,12 @@ public final class ServerClientCommunication {
                         
                         if (command.equals("exit")) {
                             socket.close();
-                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
+                            LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
                             break;
                         }
                         else if (command.equals("ping")) {
                             toReturnJSON.put("serverCommand", "pong");
-                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
+                            LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
                             dos.writeUTF(toReturnJSON.toString());
                         }
                         else if (command.equals("route-get")) {
@@ -78,10 +82,10 @@ public final class ServerClientCommunication {
                             final String destinationLon = answer.getString("destinationLon");
                             final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
                             
-                            Driver.LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
+                            LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
                             + origin + " to " + destination);
 
-                            Driver.LOGGER.log(Level.INFO, "Will try to send to client " + socket
+                            LOGGER.log(Level.INFO, "Will try to send to client " + socket
                                     + " " + Driver.HERE_ALTERNATIVES + " " 
                                     + Driver.HERE_TRANSPORT_MODE + " routes.");
                             
@@ -98,7 +102,7 @@ public final class ServerClientCommunication {
                                     destination, Driver.HERE_TRANSPORT_MODE,
                                     Driver.HERE_ALTERNATIVES, "polyline");
                             
-                            Driver.LOGGER.log(Level.INFO, "Will try tp send to client a " + Driver.HERE_TRANSPORT_MODE
+                            LOGGER.log(Level.INFO, "Will try tp send to client a " + Driver.HERE_TRANSPORT_MODE
                                     + " route " + " with " + Driver.HERE_ALTERNATIVES + " alternative routes.");
                             
                             JSONObject leastPollutedRoute = null;
@@ -121,7 +125,7 @@ public final class ServerClientCommunication {
                                         coordinateJSON.put("aqi", aqiFetch.AQIUS());                        
                                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
                                     } catch (IOException e) {
-                                        Driver.LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
+                                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
                                                 + "substituting with zero.", e);
                                         coordinateJSON.put("aqi", 0);  
                                     }
@@ -143,19 +147,19 @@ public final class ServerClientCommunication {
                             dos.writeUTF(toReturnJSON.toString());
                         }
                         
-                        Driver.LOGGER.log(Level.INFO, "Sending to client " + socket
+                        LOGGER.log(Level.INFO, "Sending to client " + socket
                                 + ": " + toReturnJSON.toString());
                     } catch (NumberFormatException e) {
-                        Driver.LOGGER.log(Level.WARNING, "Client " + socket + " sent a bad formatted message.", e);
+                        LOGGER.log(Level.WARNING, "Client " + socket + " sent a bad formatted message.", e);
                     } catch (JSONException e) {
-                        Driver.LOGGER.log(Level.WARNING, "Client " + socket + " sent a bad formatted message.", e);
+                        LOGGER.log(Level.WARNING, "Client " + socket + " sent a bad formatted message.", e);
                     } catch (URISyntaxException e) {
-                        Driver.LOGGER.log(Level.WARNING, "URI has a bad format.", e);
+                        LOGGER.log(Level.WARNING, "URI has a bad format.", e);
                     } catch (IOException e) {
-                        Driver.LOGGER.log(Level.SEVERE, "Client " + socket + " connection error.", e);
+                        LOGGER.log(Level.SEVERE, "Client " + socket + " connection error.", e);
                         break;
                     } catch (InterruptedException e) {
-                        Driver.LOGGER.log(Level.WARNING, "Thread interrupted.", e);
+                        LOGGER.log(Level.WARNING, "Thread interrupted.", e);
                     }
                 }
                 
@@ -164,7 +168,7 @@ public final class ServerClientCommunication {
                     dis.close();
                     dos.close();
                 } catch (IOException e) {
-                    Driver.LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
+                    LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
                 } 
             }   
         }

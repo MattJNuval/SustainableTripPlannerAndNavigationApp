@@ -17,9 +17,9 @@ public class AirVisualAQI {
             throws JSONException, MalformedURLException,
             IOException, URISyntaxException {
         final AirVisualRequest airVisualRequest = new AirVisualRequest(API_KEY);
-        airVisualRequest.addParameter("lat", "" + coords.lat);
-        airVisualRequest.addParameter("lon", "" + coords.lng);
-        final JSONTokener tokener = new JSONTokener(airVisualRequest.get().read());
+        airVisualRequest.addParameter("lat", "" + coords.lat)
+        .addParameter("lon", "" + coords.lng);
+        final JSONTokener tokener = new JSONTokener(airVisualRequest.get().readResponse());
 
         answer = new JSONObject(tokener);
     }

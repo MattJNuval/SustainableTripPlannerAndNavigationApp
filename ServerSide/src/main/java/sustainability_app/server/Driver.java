@@ -7,24 +7,21 @@ import sustainability_app.server.comm.ServerClientCommunication;
 
 /**
  * Driver for main entry.
- * @author Christian
- *
  */
 public class Driver {
+    private final static Logger LOGGER =
+            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    
     public final static String AIR_VISUAL_API_KEY =
             "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
     public final static String HERE_API_KEY =
             "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
     public final static String HERE_TRANSPORT_MODE = "truck";
     public final static String HERE_ALTERNATIVES = "6";
-    public final static Logger LOGGER =
-            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    
-    private Driver() { }
-    
+
     /**
      * Main entry point. This requires one single argument for the port number in which the server must run.
-     * @param args {@link String[]} arguments for the application.
+     * @param args {@link String[]} for arguments for the application.
      * @throws IllegalArgumentException if no arguments are inputted.
      */
     public static void main(final String[] args) throws IllegalArgumentException {
@@ -32,8 +29,8 @@ public class Driver {
             final int portNumber = Integer.parseInt(args[0]);
             LOGGER.log(Level.INFO, "CloudJam 2020 Sustainable Trip Planner and Navigation "
                     + "App Server starting on port " + portNumber + ".");
-            
-            final Driver driver = new Driver();
+
+            // For sockets using specified port number given.
             ServerClientCommunication serverClientCommunication = null;
             
             try {
