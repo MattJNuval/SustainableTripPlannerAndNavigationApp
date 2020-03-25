@@ -67,8 +67,8 @@ public final class ServerClientCommunication {
                             Driver.LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
                             dos.writeUTF(toReturnJSON.toString());
                         }
-                        else if (command.equals("route")) {
-                            toReturnJSON.put("serverCommand", "route-give");
+                        else if (command.equals("route-get")) {
+                            toReturnJSON.put("serverCommand", "route-send");
                             final String originLat = answer.getString("originLat");
                             toReturnJSON.put("originLat", originLat);
                             final String originLon = answer.getString("originLon");
