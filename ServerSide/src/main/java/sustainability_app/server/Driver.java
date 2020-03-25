@@ -17,10 +17,9 @@ public class Driver {
     
     private ServerClientCommunication serverClientCommunication;
     
-    public Driver() { }
+    private Driver() { }
     
     public static void main(final String[] args) throws IllegalArgumentException {
-        
         if (args.length >= 1) {
             final int portNumber = Integer.parseInt(args[0]);
             LOGGER.log(Level.INFO, "CloudJam 2020 Sustainable Trip Planner and Navigation "
