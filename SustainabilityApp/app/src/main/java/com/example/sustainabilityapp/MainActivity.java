@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.here.android.mpa.common.GeoCoordinate;
@@ -22,17 +23,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
+    private PermissionChecker permissionChecker = null;
+    private HereMaps maps = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PermissionChecker permissionChecker = new PermissionChecker(this);
+        permissionChecker = new PermissionChecker(this);
         permissionChecker.checkPermissions();
-        HereMaps maps = new HereMaps(this, this);
+        maps = new HereMaps(this, this);
         maps.initialize();
+    }
+
+    public void currentButton(View view) {
+        maps.toCurrentPosition();
+    }
+
+    public void resetButton(View view) {
+        maps.toReset();
     }
 
 }

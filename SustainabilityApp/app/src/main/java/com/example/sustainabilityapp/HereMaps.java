@@ -1,6 +1,7 @@
 package com.example.sustainabilityapp;
 
 import android.app.Activity;
+import android.view.View;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -32,6 +33,16 @@ public class HereMaps {
         mainFragmentActivity = fragmentActivity;
     }
 
+    public void toCurrentPosition() {
+        map.setCenter(positioningManager.getPosition().getCoordinate(),
+                Map.Animation.BOW);
+    }
+
+    public void toReset() {
+
+    }
+
+
     private PositioningManager.OnPositionChangedListener positionChangedListener = new PositioningManager.OnPositionChangedListener() {
         @Override
         public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, GeoPosition geoPosition, boolean b) {
@@ -49,7 +60,6 @@ public class HereMaps {
 
         }
     };
-
 
     public void initialize() {
         // Search for the Map Fragment
