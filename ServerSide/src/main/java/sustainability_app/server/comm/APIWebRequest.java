@@ -18,7 +18,7 @@ public abstract class APIWebRequest {
     /**
      * Constructor for an API web request.
      * @param baseURI {@link String} for the API base URI.
-     * @throws URISyntaxException.
+     * @throws URISyntaxException if URL has a syntax error.
      */
     protected APIWebRequest(final String baseURI) throws URISyntaxException {
         uriBuilder = new URIBuilder(baseURI);
@@ -38,9 +38,9 @@ public abstract class APIWebRequest {
     /**
      * Performs GET request on API web request.
      * @return {@link GetWebRequest} for web request.
-     * @throws MalformedURLException.
-     * @throws IOException.
-     * @throws URISyntaxException.
+     * @throws MalformedURLException if URL is malformed.
+     * @throws IOException if an IO error occurred.
+     * @throws URISyntaxException if URL has a syntax error.
      */
     public GetWebRequest get() throws MalformedURLException, IOException,
     URISyntaxException {

@@ -17,7 +17,7 @@ public class Driver {
     public final static String HERE_API_KEY =
             "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
     public final static String HERE_TRANSPORT_MODE = "truck";
-    public final static String HERE_ALTERNATIVES = "6";
+    public final static int HERE_ALTERNATIVES = 6;
 
     /**
      * Main entry point. This requires two arguments: one integer number for the port, the other a boolean for testing.

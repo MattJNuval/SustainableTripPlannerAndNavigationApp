@@ -17,8 +17,6 @@ import org.json.JSONTokener;
 import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
 import sustainability_app.server.Driver;
-import sustainability_app.server.air_visual_api.AirVisualAQI;
-import sustainability_app.server.here_api.HERERoute;
 
 /**
  * Communication for server and client using sockets.

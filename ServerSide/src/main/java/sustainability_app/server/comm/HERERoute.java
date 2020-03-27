@@ -1,4 +1,4 @@
-package sustainability_app.server.here_api;
+package sustainability_app.server.comm;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -12,18 +12,48 @@ import org.json.JSONTokener;
 import com.here.flexpolyline.PolylineEncoderDecoder;
 import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
+/**
+ * API for HERE Route.
+ * @see <a href="https://developer.here.com/documentation/routing-api/">API Implementation</a>
+ */
 public final class HERERoute {
     private final JSONObject answer;
+
+    private final class HERERouteRequest extends APIWebRequest {
+        private final static String BASE_URL = "https://router.hereapi.com/v8/routes";
+
+        /**
+         * Constructor for an HERE Route API web request.
+         * @param apiKey {@link String} for the access API key.
+         * @throws URISyntaxException if URL has a syntax error.
+         */
+        public HERERouteRequest(final String apiKey) throws URISyntaxException {
+            super(BASE_URL);
+            uriBuilder.addParameter("apiKey", apiKey);
+        }
+    }
     
-    public HERERoute(final String API_KEY, final LatLngZ origin,
+    /**
+     * Constructor for an HERE web request.
+     * @param apiKey {@link String} for the access API key.
+     * @param origin {@link LatLngZ} for the origin coordinates.
+     * @param destination {@link LatLngZ} for the destination coordinates.
+     * @param transportMode {@link String} for type of transport.
+     * @param alternatives {@link String} for number of alternatives.
+     * @param returnType {@link String} for type of route return.
+     * @throws JSONException
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public HERERoute(final String apiKey, final LatLngZ origin,
             final LatLngZ destination, final String transportMode,
-            final String alternatives,  final String returnType)
+            final int alternatives,  final String returnType)
         throws JSONException, IOException, URISyntaxException {
-        final HERERequest hereRequest = new HERERequest(API_KEY);
+        final HERERouteRequest hereRequest = new HERERouteRequest(apiKey);
         hereRequest.addParameter("origin", origin.lat + "," + origin.lng)
         .addParameter("destination", destination.lat + "," + destination.lng)
         .addParameter("transportMode", transportMode)
-        .addParameter("alternatives", alternatives)
+        .addParameter("alternatives", "" + alternatives)
         .addParameter("return", returnType);
         final JSONTokener tokener = new JSONTokener(hereRequest.get().readResponse());
 
