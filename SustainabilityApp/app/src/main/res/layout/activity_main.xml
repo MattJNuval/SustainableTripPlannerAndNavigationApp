@@ -32,6 +32,25 @@
             android:onClick="resetButton"
             android:text="Reset" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:onClick="getTimeButton"
+            android:text="Get time" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:onClick="getDateButton"
+            android:text="Get date" />
+
+
     </LinearLayout>
+
+
+
 
 </LinearLayout>

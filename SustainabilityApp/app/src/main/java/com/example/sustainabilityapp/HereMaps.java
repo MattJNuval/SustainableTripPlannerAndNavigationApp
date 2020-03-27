@@ -33,6 +33,7 @@ public class HereMaps {
         mainFragmentActivity = fragmentActivity;
     }
 
+
     public void toCurrentPosition() {
         map.setCenter(positioningManager.getPosition().getCoordinate(),
                 Map.Animation.BOW);
