@@ -61,7 +61,7 @@ public final class HERERoute {
     }
     
     /**
-     * Retrieves polyline of route and section
+     * Retrieves polyline of route and section.
      * @param route {@link int} for the route number.
      * @param section {@link int} for the section number.
      * @return {@link List} of {@link LatLngZ} of polyline coordinates.
@@ -73,7 +73,7 @@ public final class HERERoute {
     }
     
     /**
-     * Retrieves a route from the possible routes.
+     * Retrieves a route from all possible routes.
      * @param route {@link int} for the route number.
      * @return {@link JSONObject} of the route.
      * @throws JSONException if a JSON error occurred.
@@ -83,7 +83,7 @@ public final class HERERoute {
     }
     
     /**
-     * Retrieves all routes possible.
+     * Retrieves all possible routes of current request.
      * @return {@link JSONArray} of the routes.
      * @throws JSONException if a JSON error occurred.
      */
@@ -92,7 +92,7 @@ public final class HERERoute {
     }
     
     /**
-     * Retrieves section from a route.
+     * Retrieves section from all possible sections.
      * @param route {@link int} for the route number.
      * @param section {@link int} for the section number.
      * @return {@link JSONObject} of the section.
@@ -103,7 +103,7 @@ public final class HERERoute {
     }
     
     /**
-     * Retrieves a section from the route.
+     * Retrieves all possible sections from a route.
      * @param route {@link int} for the route number.
      * @return {@link JSONArray} of the sections.
      * @throws JSONException if a JSON error occurred.

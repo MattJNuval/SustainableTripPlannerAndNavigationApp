@@ -51,19 +51,39 @@ public final class AirVisualAQI {
         answer = new JSONObject(tokener);
     }
     
+    /**
+     * Retrieves AQIUS from pollution.
+     * @return {@link JSONObject} of the AQIUS.
+     * @throws JSONException if a JSON error occurred.
+     */
     public Number AQIUS() throws JSONException {
         return pollution().getNumber("aqius");
     }
     
+    /**
+     * Retrieves current data.
+     * @return {@link JSONObject} of the current data.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONObject current() throws JSONException {
         return data().getJSONObject("current");
     }
     
+    /**
+     * Retrieves data of current request.
+     * @return {@link JSONObject} of the data.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONObject data() throws JSONException {
         return answer.getJSONObject("data");
     }
     
-    public JSONObject pollution() {
+    /**
+     * Retrieves pollution of current data.
+     * @return {@link JSONObject} of the pollution.
+     * @throws JSONException if a JSON error occurred.
+     */
+    public JSONObject pollution() throws JSONException {
         return current().getJSONObject("pollution");
     }
 }
