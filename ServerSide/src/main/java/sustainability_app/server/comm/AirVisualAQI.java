@@ -35,10 +35,10 @@ public final class AirVisualAQI {
      * Constructor for a server and client communication.
      * @param apiKey {@link String} for the access API key.
      * @param coords {@link LatLngZ} for the coordinates.
-     * @throws JSONException
-     * @throws MalformedURLException
-     * @throws IOException
-     * @throws URISyntaxException
+     * @throws JSONException if a JSON error occurred.
+     * @throws MalformedURLException if URL is malformed.
+     * @throws IOException if an IO error occurred.
+     * @throws URISyntaxException if URL has a syntax error.
      */
     public AirVisualAQI(final String apiKey, final LatLngZ coords)
             throws JSONException, MalformedURLException,

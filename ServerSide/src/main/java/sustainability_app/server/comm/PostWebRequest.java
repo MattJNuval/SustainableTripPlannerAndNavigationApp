@@ -26,7 +26,7 @@ public final class PostWebRequest
      * Write to POST web request.
      * @param input {@link String} for the POST web request input.
      * @return {@link PostWebRequest} of this.
-     * @throws IOException
+     * @throws IOException if an IO error occurred.
      */
     public PostWebRequest write(String input)
             throws IOException {

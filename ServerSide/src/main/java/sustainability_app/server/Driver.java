@@ -22,7 +22,6 @@ public class Driver {
     /**
      * Main entry point. This requires two arguments: one integer number for the port, the other a boolean for testing.
      * @param args {@link String[]} for arguments for the application.
-     * @throws IllegalArgumentException if no arguments are inputted.
      */
     public static void main(final String[] args) {
         if (args.length >= 1) {

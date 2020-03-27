@@ -41,9 +41,9 @@ public final class HERERoute {
      * @param transportMode {@link String} for type of transport.
      * @param alternatives {@link String} for number of alternatives.
      * @param returnType {@link String} for type of route return.
-     * @throws JSONException
-     * @throws IOException
-     * @throws URISyntaxException
+     * @throws JSONException if a JSON error occurred.
+     * @throws IOException if an IO error occurred.
+     * @throws URISyntaxException if URL has a syntax error.
      */
     public HERERoute(final String apiKey, final LatLngZ origin,
             final LatLngZ destination, final String transportMode,
@@ -60,23 +60,54 @@ public final class HERERoute {
         answer = new JSONObject(tokener);
     }
     
+    /**
+     * Retrieves polyline of route and section
+     * @param route {@link int} for the route number.
+     * @param section {@link int} for the section number.
+     * @return {@link List} of {@link LatLngZ} of polyline coordinates.
+     * @throws JSONException if a JSON error occurred.
+     */
     public List<LatLngZ> polyline(int route, int section) throws JSONException {
         final String encodedCoordinates = section(route, section).getString("polyline");
         return PolylineEncoderDecoder.decode(encodedCoordinates);
     }
     
+    /**
+     * Retrieves a route from the possible routes.
+     * @param route {@link int} for the route number.
+     * @return {@link JSONObject} of the route.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONObject route(int route) throws JSONException {
         return routeArray().getJSONObject(route);
     }
     
+    /**
+     * Retrieves all routes possible.
+     * @return {@link JSONArray} of the routes.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONArray routeArray() throws JSONException {
         return answer.getJSONArray("routes");
     }
     
+    /**
+     * Retrieves section from a route.
+     * @param route {@link int} for the route number.
+     * @param section {@link int} for the section number.
+     * @return {@link JSONObject} of the section.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONObject section(int route, int section) throws JSONException {
         return sectionArray(route).getJSONObject(section);
     }
     
+    /**
+     * Retrieves a section from the route.
+     * @param route {@link int} for the route number.
+     * @return {@link JSONArray} of the sections.
+     * @throws JSONException if a JSON error occurred.
+     */
     public JSONArray sectionArray(int route) throws JSONException {
         return this.route(route).getJSONArray("sections");
     }
