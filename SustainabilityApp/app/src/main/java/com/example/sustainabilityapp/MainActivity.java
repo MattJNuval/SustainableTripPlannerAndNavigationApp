@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.here.android.mpa.cluster.ClusterLayer;
@@ -25,12 +26,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String CLIENT = "CLIENT";
-
-
     private PermissionChecker permissionChecker = null;
     private HereMaps maps = null;
-    private Client client = null;
+    private EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
         maps.initialize();
     }
 
+    public void searchButton(View view) {
+        searchEditText = (EditText)findViewById(R.id.search);
+        String searchText = searchEditText.getText().toString();
+        Thread searchThread = new Client(searchText);
+        searchThread.start();
+    }
+
     public void currentButton(View view) {
         maps.toCurrentPosition();
     }
@@ -52,22 +57,11 @@ public class MainActivity extends AppCompatActivity {
         maps.toReset();
     }
 
-    public void startClientButton(View view) {
+    public void pingButton(View view) {
+        Thread pingThread = new Client("Ping");
+        pingThread.start();
     }
 
-    public void exitButton(View view) {
-        Thread exitThread = new Client("Exit");
-        exitThread.start();
-    }
 
-    public void getDateButton(View view) {
-        Thread exitThread = new Client("Date");
-        exitThread.start();
-    }
-
-    public void getTimeButton(View view) throws IOException {
-        Thread exitThread = new Client("Time");
-        exitThread.start();
-    }
 
 }

@@ -7,6 +7,23 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="275dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="searchButton"
+            android:text="Search"/>
+
+    </LinearLayout>
+
     <fragment
         class="com.here.android.mpa.mapping.AndroidXMapFragment"
         android:id="@+id/mapfragment"
@@ -36,16 +53,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:onClick="getTimeButton"
-            android:text="Get time" />
+            android:onClick="pingButton"
+            android:text="Ping" />
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:onClick="getDateButton"
-            android:text="Get date" />
 
 
     </LinearLayout>

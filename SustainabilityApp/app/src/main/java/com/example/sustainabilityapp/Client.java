@@ -44,6 +44,9 @@ public class Client extends Thread {
             // Store date received form Server
             String received = dataInputStream.readUTF();
 
+            Log.i(CLIENT, received + "");
+
+
         } catch (Exception e) {
 
             Log.i(CLIENT, e + "");
