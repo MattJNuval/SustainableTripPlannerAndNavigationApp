@@ -34,7 +34,7 @@ public class Driver {
             
             try {
                 serverClientCommunication = new ServerClientCommunication(portNumber);
-                LOGGER.log(Level.INFO, "Ready");
+                LOGGER.log(Level.INFO, "Ready.");
                 if (Boolean.parseBoolean(args[1])) { // For testing purposes.
                     serverClientCommunication.test();
                 }
