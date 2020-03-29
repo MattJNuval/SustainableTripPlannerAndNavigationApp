@@ -16,12 +16,16 @@ import org.json.JSONTokener;
 
 import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 
-import sustainability_app.server.Driver;
-
 /**
  * Communication for server and client using sockets.
  */
 public final class ServerClientCommunication {
+    private final static String AIR_VISUAL_API_KEY =
+            "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
+    private final static int HERE_ALTERNATIVES = 6;
+    private final static String HERE_API_KEY =
+            "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
+    private final static String HERE_TRANSPORT_MODE = "truck";
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
@@ -103,8 +107,8 @@ public final class ServerClientCommunication {
                             + origin + " to " + destination);
 
                             LOGGER.log(Level.INFO, "Will try to send to client " + socket
-                                    + " " + Driver.HERE_ALTERNATIVES + " " 
-                                    + Driver.HERE_TRANSPORT_MODE + " routes.");
+                                    + " " + HERE_ALTERNATIVES + " " 
+                                    + HERE_TRANSPORT_MODE + " routes.");
                             
                             // This is where things get tricky.
                             // 1. Get all possible routes.
@@ -119,9 +123,9 @@ public final class ServerClientCommunication {
                             double lastAqi = 0;
                             
                             // Routes from coordinates and their polylines.
-                            final HERERoute routeFetch = new HERERoute(Driver.HERE_API_KEY, origin,
-                                    destination, Driver.HERE_TRANSPORT_MODE,
-                                    Driver.HERE_ALTERNATIVES, "polyline");
+                            final HERERoute routeFetch = new HERERoute(HERE_API_KEY, origin,
+                                    destination, HERE_TRANSPORT_MODE,
+                                    HERE_ALTERNATIVES, "polyline");
 
                             for (int i = 0; i < routeFetch.routeArray().length(); i++) {
                                 final JSONObject routeJSON = new JSONObject();
@@ -137,7 +141,7 @@ public final class ServerClientCommunication {
                                     coordinateJSON.put("z", coordinate.z);
                                     try {
                                         // AQIUS from each coordinate.
-                                        final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
+                                        final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
                                                 coordinate);
                                         coordinateJSON.put("aqi", aqiFetch.AQIUS());                   
                                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
@@ -255,8 +259,8 @@ public final class ServerClientCommunication {
             + origin + " to " + destination);
     
             LOGGER.log(Level.INFO, "Will try to send to client <TEST> "
-            + Driver.HERE_ALTERNATIVES + " " 
-                    + Driver.HERE_TRANSPORT_MODE + " routes.");
+            + HERE_ALTERNATIVES + " " 
+                    + HERE_TRANSPORT_MODE + " routes.");
             
             // This is where things get tricky.
             // 1. Get all possible routes.
@@ -271,9 +275,9 @@ public final class ServerClientCommunication {
             double lastAqi = 0;
             
             // Routes from coordinates and their polylines.
-            final HERERoute routeFetch = new HERERoute(Driver.HERE_API_KEY, origin,
-                    destination, Driver.HERE_TRANSPORT_MODE,
-                    Driver.HERE_ALTERNATIVES, "polyline");
+            final HERERoute routeFetch = new HERERoute(HERE_API_KEY, origin,
+                    destination, HERE_TRANSPORT_MODE,
+                    HERE_ALTERNATIVES, "polyline");
 
             for (int i = 0; i < routeFetch.routeArray().length(); i++) {
                 final JSONObject routeJSON = new JSONObject();
@@ -289,7 +293,7 @@ public final class ServerClientCommunication {
                     coordinateJSON.put("z", coordinate.z);
                     try {
                         // AQIUS from each coordinate.
-                        final AirVisualAQI aqiFetch = new AirVisualAQI(Driver.AIR_VISUAL_API_KEY,
+                        final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
                                 coordinate);
                         
                         coordinateJSON.put("aqi", aqiFetch.AQIUS());                        

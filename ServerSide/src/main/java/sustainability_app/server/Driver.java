@@ -11,13 +11,6 @@ import sustainability_app.server.comm.ServerClientCommunication;
 public class Driver {
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    
-    public final static String AIR_VISUAL_API_KEY =
-            "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
-    public final static String HERE_API_KEY =
-            "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
-    public final static String HERE_TRANSPORT_MODE = "truck";
-    public final static int HERE_ALTERNATIVES = 6;
 
     /**
      * Main entry point. This requires two arguments: one integer number for the port, the other a boolean for testing.
