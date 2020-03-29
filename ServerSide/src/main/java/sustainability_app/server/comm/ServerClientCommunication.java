@@ -235,7 +235,6 @@ public final class ServerClientCommunication {
             final JSONObject toReturnJSON = new JSONObject();
             // Time stamp to send to client.
             toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
-            toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
             // Command to send to client.
             toReturnJSON.put("serverCommand", "route-send");
             // Origin latitude to start at.
