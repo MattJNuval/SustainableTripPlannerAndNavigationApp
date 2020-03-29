@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         maps.toSearch();
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
-        Thread searchThread = new Client(searchText);
-        searchThread.start();
+        Thread client = new Client("ec2-52-91-205-43.compute-1.amazonaws.com", 5056, "");
+        client.start();
     }
 
     public void currentButton(View view) {
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pingButton(View view) {
-        Thread pingThread = new Client("Ping");
-        pingThread.start();
+        Thread client = new Client("ec2-52-91-205-43.compute-1.amazonaws.com", 5056, "{\"clientCommand\": \"ping\"}");
+        client.start();
     }
 
 

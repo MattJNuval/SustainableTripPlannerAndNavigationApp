@@ -1,64 +1,64 @@
 package com.example.sustainabilityapp;
 
-import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Client extends Thread {
+    private static final String CLIENT = "CLIENT";
+    private Socket socket = null;
+    private DataInputStream dataInputStream = null;
+    private DataOutputStream dataOutputStream = null;
+    private String address;
+    private int port;
+    private String input;
 
-    private final static String CLIENT = "CLIENT";
-    private String results = "";
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
-    private Socket socket;
-
-
-    public Client(String input) {
-        results = input;
+    public Client(String address, int port, String input) {
+       this.address = address;
+       this.port = port;
+       this.input = input;
     }
-
 
     @Override
     public void run() {
+        // Establish a connection
         try {
+            socket = new Socket(address,port);
+            Log.i(CLIENT,"Connected");
 
-            // Establish the connection with server port number 55
-            socket = new Socket("192.168.1.105", 5056);
-
-            // Obtaining input and out streams
+            // Takes input from terminal
             dataInputStream = new DataInputStream(socket.getInputStream());
+
+            // Sends output to the socket
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-            Log.i(CLIENT, dataInputStream.readUTF());
-
-            // Send results to Server
-            dataOutputStream.writeUTF(results);
-
-            // Store date received form Server
-            String received = dataInputStream.readUTF();
-
-            Log.i(CLIENT, received + "");
-
-
-        } catch (Exception e) {
-
-            Log.i(CLIENT, e + "");
+        } catch (UnknownHostException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-                dataInputStream.close();
-                dataOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        try {
+            dataOutputStream.writeUTF(input);
+            String result = dataInputStream.readUTF();
+            Log.i(CLIENT, result + "");
+            dataOutputStream.writeUTF("{\"clientCommand\": \"exit\"}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            dataInputStream.close();
+            dataOutputStream.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
