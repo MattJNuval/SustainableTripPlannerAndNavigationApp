@@ -17,11 +17,11 @@ import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 public final class AirVisualAQI {
     private final JSONObject answer;
 
-    private final class AirVisualAQIRequest extends APIWebRequest {
+    private final class AirVisualAQIRequest extends AbstractAPIRequest {
         private final static String BASE_URL = "https://api.airvisual.com/v2/nearest_city";
         
         /**
-         * Constructor for an AirVisual API web request.
+         * Constructor for an AirVisual API request.
          * @param apiKey {@link String} for the access API key.
          * @throws URISyntaxException if URL has a syntax error.
          */

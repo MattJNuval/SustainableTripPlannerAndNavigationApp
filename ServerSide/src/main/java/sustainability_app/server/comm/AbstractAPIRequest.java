@@ -7,36 +7,36 @@ import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 
 /**
- * Abstraction for an API web request container.
+ * Abstraction for an API request container.
  */
-public abstract class APIWebRequest {
+public abstract class AbstractAPIRequest {
     /**
      * {@link URIBuilder} for building URI.
      */
     protected URIBuilder uriBuilder;
     
     /**
-     * Constructor for an API web request.
+     * Constructor for an API request.
      * @param baseURI {@link String} for the API base URI.
      * @throws URISyntaxException if URL has a syntax error.
      */
-    protected APIWebRequest(final String baseURI) throws URISyntaxException {
+    protected AbstractAPIRequest(final String baseURI) throws URISyntaxException {
         uriBuilder = new URIBuilder(baseURI);
     }
     
     /**
-     * Add parameter to API web request.
+     * Add parameter to API request.
      * @param key {@link String} for the parameter key.
      * @param value {@link String} for the parameter value.
      * @return {@link APIWebRequest} of this.
      */
-    public APIWebRequest addParameter(final String key, final String value) {
+    public AbstractAPIRequest addParameter(final String key, final String value) {
         uriBuilder.addParameter(key, value);
         return this;
     }
     
     /**
-     * Performs GET request on API web request.
+     * Performs GET web request on API request.
      * @return {@link GetWebRequest} for web request.
      * @throws MalformedURLException if URL is malformed.
      * @throws IOException if an IO error occurred.
@@ -48,7 +48,7 @@ public abstract class APIWebRequest {
     }
     
     /**
-     * Performs POST request on API web request.
+     * Performs POST web request on API request.
      * @param input {@link String} for the input of the post request.
      * @return {@link GetWebRequest} for web request.
      * @throws MalformedURLException if URL is malformed.

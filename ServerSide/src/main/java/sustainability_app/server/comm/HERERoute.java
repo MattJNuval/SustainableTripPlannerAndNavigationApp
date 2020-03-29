@@ -19,11 +19,11 @@ import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 public final class HERERoute {
     private final JSONObject answer;
 
-    private final class HERERouteRequest extends APIWebRequest {
+    private final class HERERouteRequest extends AbstractAPIRequest {
         private final static String BASE_URL = "https://router.hereapi.com/v8/routes";
 
         /**
-         * Constructor for an HERE Route API web request.
+         * Constructor for an HERE Route API request.
          * @param apiKey {@link String} for the access API key.
          * @throws URISyntaxException if URL has a syntax error.
          */
