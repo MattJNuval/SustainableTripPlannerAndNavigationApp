@@ -77,6 +77,10 @@ public final class ServerClientCommunication {
                             LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
                             break; // Breaks the connection.
                         }
+                        else if (received.equals("ping")) {
+                            toReturnJSON.put("serverCommand", "pong");
+                            LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
+                        }
                         else if (command.equals("ping")) { // Client ping command.
                             // Command to send to client.
                             toReturnJSON.put("serverCommand", "pong");
