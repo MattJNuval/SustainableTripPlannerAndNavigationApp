@@ -47,7 +47,9 @@ public class Driver {
                 LOGGER.log(Level.SEVERE, "Server error.", e);
             } finally {
                 try {
-                    serverClientCommunication.close();
+                    if (serverClientCommunication != null) {
+                        serverClientCommunication.close(); 
+                    }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Could not close server.", e);
                 }
