@@ -33,7 +33,8 @@ public class Driver {
                 }
                 else {
                     while (true) {
-                        serverClientCommunication.listen(); // Listen on port for socket.
+                        // Listen on port for socket.
+                        serverClientCommunication.listen();
                     }
                 }
             } catch (IOException e) {
@@ -41,6 +42,7 @@ public class Driver {
             } finally {
                 try {
                     if (serverClientCommunication != null) {
+                        // Close socket when done.
                         serverClientCommunication.close(); 
                     }
                 } catch (IOException e) {

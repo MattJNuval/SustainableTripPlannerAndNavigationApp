@@ -79,7 +79,8 @@ public final class ServerClientCommunication {
                         if (command.equals("exit")) { // Client exit command.
                             socket.close();
                             LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
-                            break; // Breaks the connection.
+                         // Breaks the connection.
+                            break;
                         }
                         else if (command.equals("ping")) { // Client ping command.
                             // Command to send to client.
