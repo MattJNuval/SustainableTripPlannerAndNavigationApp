@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchButton(View view) {
+        maps.toSearch();
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
         Thread searchThread = new Client(searchText);
