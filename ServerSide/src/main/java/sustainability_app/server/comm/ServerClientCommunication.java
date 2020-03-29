@@ -213,11 +213,11 @@ public final class ServerClientCommunication {
             throws IOException {
         if (serverSocket != null) {
             final Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected: " + clientSocket);
+            LOGGER.log(Level.INFO, "Client connected: " + clientSocket);
             final DataInputStream dis = new DataInputStream(clientSocket.getInputStream()); 
             final DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream()); 
             
-            System.out.println("Assigning new thread for client " + clientSocket); 
+            LOGGER.log(Level.INFO, "Assigning new thread for client " + clientSocket); 
             final Thread t = new ClientThread(clientSocket, dis, dos); 
             t.start();    
         }
