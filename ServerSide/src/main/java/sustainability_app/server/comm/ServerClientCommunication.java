@@ -150,9 +150,8 @@ public final class ServerClientCommunication {
                                         // Add AQIUS to total AQIUS for route.
                                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
                                     } catch (IOException e) {
-                                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
-                                                + "substituting with zero.", e);
-                                        coordinateJSON.put("aqi", 0);  
+                                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
+                                        coordinateJSON.put("aqi", "?");
                                     }
                                     routeJSON.put("c" + j, coordinateJSON);
                                     
