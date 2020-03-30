@@ -152,7 +152,7 @@ public final class ServerClientCommunication {
                                         coordinateJSON.put("aqi", 0);  
                                     }
                                     routeJSON.put("c" + j, coordinateJSON);
-                                    Thread.sleep(5000); // Prevent as much overhead as possible.
+                                    Thread.sleep(500); // Prevent as much overhead as possible.
                                 }
                                 
                                 routeJSON.put("totalRouteAqi", totalRouteAqi);
@@ -305,7 +305,7 @@ public final class ServerClientCommunication {
                         coordinateJSON.put("aqi", 0);  
                     }
                     routeJSON.put("c" + j, coordinateJSON);
-                    Thread.sleep(5000); // Prevent as much overhead as possible.
+                    Thread.sleep(500); // Prevent as much overhead as possible.
                 }
                 
                 routeJSON.put("totalRouteAqi", totalRouteAqi);
