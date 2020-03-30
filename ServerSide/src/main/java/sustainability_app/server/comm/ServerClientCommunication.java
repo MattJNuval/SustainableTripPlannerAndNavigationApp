@@ -22,7 +22,7 @@ import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 public final class ServerClientCommunication {
     private final static String AIR_VISUAL_API_KEY =
             "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
-    private final static int CONNECTION_THREAD_SLEEP = 500;
+    private final static int CONNECTION_THREAD_SLEEP = 0;
     private final static int HERE_ALTERNATIVES = 6;
     private final static String HERE_API_KEY =
             "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
