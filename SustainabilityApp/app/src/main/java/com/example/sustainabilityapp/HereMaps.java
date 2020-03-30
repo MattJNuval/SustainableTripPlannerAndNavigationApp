@@ -1,6 +1,9 @@
 package com.example.sustainabilityapp;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -9,10 +12,13 @@ import androidx.fragment.app.FragmentActivity;
 import com.here.android.mpa.common.GeoBoundingBox;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
+import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
 import com.here.android.mpa.mapping.AndroidXMapFragment;
 import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapLabeledMarker;
+import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.MapRoute;
 import com.here.android.mpa.mapping.PositionIndicator;
 import com.here.android.mpa.routing.CoreRouter;
@@ -23,12 +29,19 @@ import com.here.android.mpa.routing.RouteWaypoint;
 import com.here.android.mpa.routing.Router;
 import com.here.android.mpa.routing.RoutingError;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class HereMaps {
 
+    private final static String CLIENT = "CLIENT";
 
     private Activity mainActivity = null;
     private FragmentActivity mainFragmentActivity = null;
@@ -39,10 +52,55 @@ public class HereMaps {
     private boolean onCreateTrigger = true;
     private Map map = null;
     private MapRoute mapRoute = null;
+    private Image image;
+    private MapLabeledMarker mapLabeledMarker;
+    private List<MapObject> mapObjectList;
 
     public HereMaps(Activity activity, FragmentActivity fragmentActivity) {
         mainActivity = activity;
         mainFragmentActivity = fragmentActivity;
+    }
+
+    public void setMarker(double latitude, double longitude, String aqi) {
+        try {
+
+            image = new Image();
+            Bitmap icon = BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), R.drawable.ic_dot);
+            image.setBitmap(icon);
+            mapLabeledMarker = new MapLabeledMarker(new GeoCoordinate(latitude, longitude), image);
+            mapLabeledMarker.setLabelText(map.getMapDisplayLanguage(),"AQI: " + aqi);
+            mapObjectList.add(mapLabeledMarker);
+            map.addMapObject(mapLabeledMarker);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void toPing(String jsonString) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonObject1 = jsonObject.getJSONObject("route0");
+            Iterator<String> keys = jsonObject1.keys();
+            while(keys.hasNext()) {
+                String key = keys.next();
+                if(jsonObject1.get(key) instanceof  JSONObject) {
+                    //if(!jsonObject1.getJSONObject(key).get("aqi").equals("?")) {
+                        Log.i(CLIENT, "lat: " + jsonObject1.getJSONObject(key).get("lat") + "\n"
+                                + "lon: " + jsonObject1.getJSONObject(key).get("lon") + "\n"
+                                + "aqi: " + jsonObject1.getJSONObject(key).get("aqi") + "\n\n");
+                        double latitude = Double.parseDouble(jsonObject1.getJSONObject(key).get("lat")+"");
+                        double longitude = Double.parseDouble(jsonObject1.getJSONObject(key).get("lon")+"");
+                        String aqi = jsonObject1.getJSONObject(key).get("aqi")+"";
+                        setMarker(latitude,longitude,aqi);
+                    //}
+                }
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -55,13 +113,21 @@ public class HereMaps {
         if(map != null && mapRoute != null) {
             Toast.makeText(mainActivity, "Resetting", Toast.LENGTH_SHORT).show();
             map.removeMapObject(mapRoute);
+            map.removeMapObjects(mapObjectList);
             mapRoute = null;
+        } else if(map != null && mapObjectList != null) {
+            Toast.makeText(mainActivity, "Resetting", Toast.LENGTH_SHORT).show();
+            map.removeMapObjects(mapObjectList);
         } else {
             Toast.makeText(mainActivity, "Resetting", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void createRoute() {
+        // Test
+        JsonString jsonStringer = new JsonString();
+        String jsonString = jsonStringer.RouteJson();
+
         CoreRouter coreRouter = new CoreRouter();
 
         RoutePlan routePlan = new RoutePlan();
@@ -73,14 +139,42 @@ public class HereMaps {
         routeOptions.setRouteCount(1);
         routePlan.setRouteOptions(routeOptions);
 
-
         RouteWaypoint startPoint = new RouteWaypoint(positioningManager.getPosition().getCoordinate());
-        RouteWaypoint destination = new RouteWaypoint(new GeoCoordinate(34.0537633,-118.2419223));
-        // RouteWaypoint destination2 = new RouteWaypoint(new GeoCoordinate(34.2410366,-118.5276745));
+
+        List<RouteWaypoint> routeWaypointList = new ArrayList<>();
+        int index = 0;
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonObject1 = jsonObject.getJSONObject("route0");
+            Iterator<String> keys = jsonObject1.keys();
+            while(keys.hasNext()) {
+                String key = keys.next();
+                if(jsonObject1.get(key) instanceof  JSONObject) {
+                    //if(!jsonObject1.getJSONObject(key).get("aqi").equals("?")) {
+
+                        double latitude = Double.parseDouble(jsonObject1.getJSONObject(key).get("lat")+"");
+                        double longitude = Double.parseDouble(jsonObject1.getJSONObject(key).get("lon")+"");
+                        String aqi = jsonObject1.getJSONObject(key).get("aqi")+"";
+                        setMarker(latitude,longitude,aqi);
+                        routeWaypointList.add(index,new RouteWaypoint(new GeoCoordinate(latitude, longitude)));
+                        index++;
+
+                    //}
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RouteWaypoint finalDestination = new RouteWaypoint(new GeoCoordinate(34.0686074,-118.2924265));
 
         routePlan.addWaypoint(startPoint);
-        routePlan.addWaypoint(destination);
-        // routePlan.addWaypoint(destination2);
+        for(int index2 = 0; index2 < routeWaypointList.size(); index2++) {
+            routePlan.addWaypoint(routeWaypointList.get(index2));
+        }
+        routePlan.addWaypoint(finalDestination);
 
         coreRouter.calculateRoute(routePlan, new Router.Listener<List<RouteResult>, RoutingError>() {
             @Override
@@ -107,12 +201,15 @@ public class HereMaps {
         });
     }
 
-    public void toSearch() {
+    public void toSearch(String input) {
         if(map != null && mapRoute != null) {
             map.removeMapObject(mapRoute);
+            map.removeMapObjects(mapObjectList);
             mapRoute = null;
         } else {
-            createRoute();
+            if(input.equalsIgnoreCase("ralphs")) {
+                createRoute();
+            }
         }
     }
 
@@ -135,6 +232,8 @@ public class HereMaps {
     };
 
     public void initialize() {
+
+        mapObjectList = new ArrayList<>();
         // Search for the Map Fragment
         final AndroidXMapFragment mapFragment = (AndroidXMapFragment)
                 mainFragmentActivity.getSupportFragmentManager().findFragmentById(R.id.mapfragment);

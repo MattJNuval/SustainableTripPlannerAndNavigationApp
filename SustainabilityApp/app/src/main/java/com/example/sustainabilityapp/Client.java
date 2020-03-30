@@ -57,6 +57,7 @@ public class Client extends Thread {
             dataOutputStream.close();
             socket.close();
         } catch (IOException e) {
+            Log.i(CLIENT, e + "");
             e.printStackTrace();
         }
 

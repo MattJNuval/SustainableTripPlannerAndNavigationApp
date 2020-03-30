@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String CLIENT = "CLIENT";
+
     private PermissionChecker permissionChecker = null;
     private HereMaps maps = null;
     private EditText searchEditText;
@@ -43,11 +46,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchButton(View view) {
-        maps.toSearch();
+
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
-        Thread client = new Client("ec2-52-91-205-43.compute-1.amazonaws.com", 5056, "");
-        client.start();
+        maps.toSearch(searchText);
+        //Thread client = new Client("3.86.111.23", 5056, "");
+        //client.start();
     }
 
     public void currentButton(View view) {
@@ -59,10 +63,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pingButton(View view) {
-        Thread client = new Client("ec2-52-91-205-43.compute-1.amazonaws.com", 5056, "{\"clientCommand\": \"ping\"}");
-        client.start();
+        /*Thread client = new Client("3.86.111.23", 5056, "{\n" +
+                "  \"clientCommand\": \"route-get\",\n" +
+                "  \"originLat\": \"34.0687464\",\n" +
+                "  \"originLon\": \"-118.3111569\",\n" +
+                "  \"destinationLat\": \"34.0686074\",\n" +
+                "  \"destinationLon\": \"-118.2924265\"\n" +
+                "}");
+        client.start(); */
+        JsonString jsonString = new JsonString();
+        // JSONStringParser jsonStringParser = new JSONStringParser(jsonString.RouteJson());
+        // jsonStringParser.toPing();
+        maps.toPing(jsonString.RouteJson());
+        // Log.i(CLIENT, jsonString.RouteJson() + "");
+
     }
-
-
 
 }
