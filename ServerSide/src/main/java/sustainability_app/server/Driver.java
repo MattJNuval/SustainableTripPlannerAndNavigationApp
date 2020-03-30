@@ -38,7 +38,7 @@ public class Driver {
                     }
                 }
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Server error.", e);
+                LOGGER.log(Level.SEVERE, "Server IO error.", e);
             } finally {
                 try {
                     if (serverClientCommunication != null) {

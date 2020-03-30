@@ -22,6 +22,7 @@ import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
 public final class ServerClientCommunication {
     private final static String AIR_VISUAL_API_KEY =
             "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
+    private final static int CONNECTION_THREAD_SLEEP = 500;
     private final static int HERE_ALTERNATIVES = 6;
     private final static String HERE_API_KEY =
             "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
@@ -144,7 +145,9 @@ public final class ServerClientCommunication {
                                         // AQIUS from each coordinate.
                                         final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
                                                 coordinate);
-                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                   
+                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());
+                                        
+                                        // Add AQIUS to total AQIUS for route.
                                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
                                     } catch (IOException e) {
                                         LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
@@ -152,7 +155,9 @@ public final class ServerClientCommunication {
                                         coordinateJSON.put("aqi", 0);  
                                     }
                                     routeJSON.put("c" + j, coordinateJSON);
-                                    Thread.sleep(500); // Prevent as much overhead as possible.
+                                    
+                                    // Prevent as much overhead as possible.
+                                    Thread.sleep(CONNECTION_THREAD_SLEEP);
                                 }
                                 
                                 routeJSON.put("totalRouteAqi", totalRouteAqi);
@@ -182,15 +187,16 @@ public final class ServerClientCommunication {
                         LOGGER.log(Level.SEVERE, "Client " + socket + " connection error.", e);
                         break;
                     } catch (InterruptedException e) {
-                        LOGGER.log(Level.WARNING, "Thread interrupted.", e);
+                        LOGGER.log(Level.SEVERE, "Thread interrupted.", e);
                     }
                 }
                 
-                try { // Close connection resources.
+                // Close connection resources.
+                try {
                     dis.close();
                     dos.close();
                 } catch (IOException e) {
-                    LOGGER.log(Level.WARNING, "Could not properly close resources.", e);
+                    LOGGER.log(Level.SEVERE, "Could not properly close resources.", e);
                 } 
             }   
         }
@@ -297,7 +303,9 @@ public final class ServerClientCommunication {
                         final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
                                 coordinate);
                         
-                        coordinateJSON.put("aqi", aqiFetch.AQIUS());                        
+                        coordinateJSON.put("aqi", aqiFetch.AQIUS());
+                        
+                        // Add AQIUS to total AQIUS for route.
                         totalRouteAqi += aqiFetch.AQIUS().doubleValue();
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
@@ -305,7 +313,9 @@ public final class ServerClientCommunication {
                         coordinateJSON.put("aqi", 0);  
                     }
                     routeJSON.put("c" + j, coordinateJSON);
-                    Thread.sleep(500); // Prevent as much overhead as possible.
+                    
+                    // Prevent as much overhead as possible.
+                    Thread.sleep(CONNECTION_THREAD_SLEEP);
                 }
                 
                 routeJSON.put("totalRouteAqi", totalRouteAqi);
@@ -330,7 +340,7 @@ public final class ServerClientCommunication {
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Client <TEST> connection error.", e);
         } catch (InterruptedException e) {
-            LOGGER.log(Level.WARNING, "Thread interrupted.", e);
+            LOGGER.log(Level.SEVERE, "Thread interrupted.", e);
         }
         return this;
     }
