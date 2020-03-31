@@ -26,8 +26,8 @@ in a terminal in the same directory (for Windows systems, use gradlew.bat).
 
 After building, just execute
 ```bash
-gradlew run <port>
+gradlew run <port> false
 ```
 in a terminal in the same directory (for Windows systems, use gradlew.bat).
 
-You must specify a port number.
+You must specify a port.
