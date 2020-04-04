@@ -36,8 +36,8 @@ If you wish to see the details for the contributors, see [here](https://github.c
 
 * [Mathew Nuval](https://github.com/MattJNuval)
 * [Christian Shadd](https://github.com/cshadd)
-* Gaven Gantz
-* Huynh Maru
+* Gaven Grantz
+* Hoan Huynh
 
 ## Acknowledgments
 * [IQ Air](https://www.iqair.com/)
