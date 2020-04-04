@@ -5,6 +5,7 @@ A mobile application that plans your trip in accordance with the current air con
 * [Client-side](#Client-side)
 * [Versioning](#Versioning)
 * [Contributors](#Contributors)
+* [Major Contributors](##Major-Contributors)
 * [Acknowledgments](#Acknowledgments)
 * [License](LICENSE)
 
@@ -30,6 +31,13 @@ The client-side is the application itself that communicates with the server-side
 
 ## Contributors
 If you wish to see the details for the contributors, see [here](https://github.com/MattJNuval/SustainableTripPlannerAndNavigationApp/graphs/contributors).
+
+## Major Contributors
+
+* [Mathew Nuval](https://github.com/MattJNuval)
+* [Christian Shadd](https://github.com/cshadd)
+* Gaven Gantz
+* Huynh Maru
 
 ## Acknowledgments
 * [IQ Air](https://www.iqair.com/)
