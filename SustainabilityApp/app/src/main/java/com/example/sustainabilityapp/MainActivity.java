@@ -46,10 +46,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchButton(View view) {
+        JsonString jsonString = new JsonString();
 
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
-        maps.toSearch(searchText);
+        maps.toSearch(searchText, jsonString.RouteJson(), 34.0686074,-118.2924265);
         //Thread client = new Client("3.86.111.23", 5056, "");
         //client.start();
     }
@@ -63,17 +64,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pingButton(View view) {
-        /*Thread client = new Client("3.86.111.23", 5056, "{\n" +
+        Thread client = new Client("3.86.111.23", 5056, "{\n" +
                 "  \"clientCommand\": \"route-get\",\n" +
                 "  \"originLat\": \"34.0687464\",\n" +
                 "  \"originLon\": \"-118.3111569\",\n" +
                 "  \"destinationLat\": \"34.0686074\",\n" +
                 "  \"destinationLon\": \"-118.2924265\"\n" +
                 "}");
-        client.start(); */
+        // client.start();
         JsonString jsonString = new JsonString();
-        // JSONStringParser jsonStringParser = new JSONStringParser(jsonString.RouteJson());
-        // jsonStringParser.toPing();
         maps.toPing(jsonString.RouteJson());
         // Log.i(CLIENT, jsonString.RouteJson() + "");
 

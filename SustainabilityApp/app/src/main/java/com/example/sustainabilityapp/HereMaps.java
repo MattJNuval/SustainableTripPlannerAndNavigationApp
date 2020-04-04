@@ -48,7 +48,6 @@ public class HereMaps {
 
     private PositioningManager positioningManager;
     private PositionIndicator positionIndicator;
-    private boolean paused = false;
     private boolean onCreateTrigger = true;
     private Map map = null;
     private MapRoute mapRoute = null;
@@ -56,11 +55,22 @@ public class HereMaps {
     private MapLabeledMarker mapLabeledMarker;
     private List<MapObject> mapObjectList;
 
+    /**
+     * Constructor
+     * @param activity
+     * @param fragmentActivity
+     */
     public HereMaps(Activity activity, FragmentActivity fragmentActivity) {
         mainActivity = activity;
         mainFragmentActivity = fragmentActivity;
     }
 
+    /**
+     * Set the marker with given aqi labels on the map using the latitude and longitude
+     * @param latitude
+     * @param longitude
+     * @param aqi
+     */
     public void setMarker(double latitude, double longitude, String aqi) {
         try {
 
@@ -77,6 +87,10 @@ public class HereMaps {
         }
     }
 
+    /**
+     * To test server response
+     * @param jsonString
+     */
     public void toPing(String jsonString) {
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -103,12 +117,17 @@ public class HereMaps {
         }
     }
 
-
+    /**
+     * Repositions map to user's current position
+     */
     public void toCurrentPosition() {
         map.setCenter(positioningManager.getPosition().getCoordinate(),
                 Map.Animation.BOW);
     }
 
+    /**
+     * Remove map marker and map routes from the map
+     */
     public void toReset() {
         if(map != null && mapRoute != null) {
             Toast.makeText(mainActivity, "Resetting", Toast.LENGTH_SHORT).show();
@@ -123,10 +142,13 @@ public class HereMaps {
         }
     }
 
-    private void createRoute() {
-        // Test
-        JsonString jsonStringer = new JsonString();
-        String jsonString = jsonStringer.RouteJson();
+    /**
+     * Parses jsonString to get latitude and longitude response from the server to create point to point coordinates leading up to final latitude and longitude coordinates
+     * @param jsonString
+     * @param finalLatitude
+     * @param finalLongitude
+     */
+    private void createRoute(String jsonString, double finalLatitude, double finalLongitude) {
 
         CoreRouter coreRouter = new CoreRouter();
 
@@ -168,7 +190,7 @@ public class HereMaps {
             e.printStackTrace();
         }
 
-        RouteWaypoint finalDestination = new RouteWaypoint(new GeoCoordinate(34.0686074,-118.2924265));
+        RouteWaypoint finalDestination = new RouteWaypoint(new GeoCoordinate(finalLatitude, finalLongitude));
 
         routePlan.addWaypoint(startPoint);
         for(int index2 = 0; index2 < routeWaypointList.size(); index2++) {
@@ -201,18 +223,21 @@ public class HereMaps {
         });
     }
 
-    public void toSearch(String input) {
+    public void toSearch(String input, String jsonString, double finalLatitude, double finalLongitude) {
         if(map != null && mapRoute != null) {
             map.removeMapObject(mapRoute);
             map.removeMapObjects(mapObjectList);
             mapRoute = null;
         } else {
             if(input.equalsIgnoreCase("ralphs")) {
-                createRoute();
+                createRoute(jsonString, finalLatitude, finalLongitude);
             }
         }
     }
 
+    /**
+     * To get user's current position
+     */
     private PositioningManager.OnPositionChangedListener positionChangedListener = new PositioningManager.OnPositionChangedListener() {
         @Override
         public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, GeoPosition geoPosition, boolean b) {
@@ -231,6 +256,9 @@ public class HereMaps {
         }
     };
 
+    /**
+     * Creates an initization from the map
+     */
     public void initialize() {
 
         mapObjectList = new ArrayList<>();
