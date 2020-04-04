@@ -5,7 +5,7 @@ A mobile application that plans your trip in accordance with the current air con
 * [Client-side](#Client-side)
 * [Versioning](#Versioning)
 * [Contributors](#Contributors)
-* [Major Contributors](##Major-Contributors)
+* [Major Contributors](#Major-Contributors)
 * [Acknowledgments](#Acknowledgments)
 * [License](LICENSE)
 
