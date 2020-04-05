@@ -20,25 +20,27 @@ import com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ;
  * Communication for server and client using sockets.
  */
 public final class ServerClientCommunication {
-    private final static String AIR_VISUAL_API_KEY =
-            "d7664ac9-d9fb-4ed4-b6f6-2e8feac28693";
     private final static int CONNECTION_THREAD_SLEEP = 0;
     private final static int HERE_ALTERNATIVES = 6;
-    private final static String HERE_API_KEY =
-            "ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY";
     private final static String HERE_TRANSPORT_MODE = "truck";
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
+    private final String airVisualAPIKey;
+    private final String hereApiKey;
     private final ServerSocket serverSocket;
 
     /**
      * Constructor for a server and client communication.
      * @param portNumber {@link int} for the port number.
+     * @param airVisualAPIKey (@link String} for the Air Visual API Key.
+     * @param hereApiKey (@link String} for the HERE API Key.
      * @throws IOException if an IO error occurred.
      */
-    public ServerClientCommunication(final int portNumber)
-            throws IOException {
+    public ServerClientCommunication(final int portNumber, final String airVisualAPIKey,
+            final String hereApiKey) throws IOException {
+        this.airVisualAPIKey = airVisualAPIKey;
+        this.hereApiKey = hereApiKey;
         serverSocket = new ServerSocket(portNumber);
         serverSocket.setSoTimeout(0);
     }
@@ -89,88 +91,7 @@ public final class ServerClientCommunication {
                             LOGGER.log(Level.INFO, "Client " + socket + " pinged server.");
                         }
                         else if (command.equals("route-get")) { // Client route-get command.
-                            // Command to send to client.
-                            toReturnJSON.put("serverCommand", "route-send");
-                            // Origin latitude to start at.
-                            final String originLat = answer.getString("originLat");
-                            toReturnJSON.put("originLat", originLat);
-                            // Origin longitude to start at.
-                            final String originLon = answer.getString("originLon");
-                            toReturnJSON.put("originLon", originLon);
-                            final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
-                            
-                            // Destination latitude to end at.
-                            final String destinationLat = answer.getString("destinationLat");
-                            // Destination longitude to end at.
-                            final String destinationLon = answer.getString("destinationLon");
-                            final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
-                            
-                            LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
-                            + origin + " to " + destination);
-
-                            LOGGER.log(Level.INFO, "Will try to send to client " + socket
-                                    + " " + HERE_ALTERNATIVES + " " 
-                                    + HERE_TRANSPORT_MODE + " routes.");
-                            
-                            // This is where things get tricky.
-                            // 1. Get all possible routes.
-                            // 2. Put all route coordinates in their own json objects.
-                            // 3. Get air pollution from each route coordinate.
-                            // 4. Sum all the air pollution from each route.
-                            // 5. Label best route.
-                            
-                            // TODO: Add truck information.
-                            
-                            JSONObject leastPollutedRoute = null;
-                            double lastAqi = 0;
-                            
-                            // Routes from coordinates and their polylines.
-                            final HERERoute routeFetch = new HERERoute(HERE_API_KEY, origin,
-                                    destination, HERE_TRANSPORT_MODE,
-                                    HERE_ALTERNATIVES, "polyline");
-
-                            for (int i = 0; i < routeFetch.routeArray().length(); i++) {
-                                final JSONObject routeJSON = new JSONObject();
-                                final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
-                                double totalRouteAqi = 0;
-                                
-                                // Gets all coordinates from polyline.
-                                for (int j = 0; j < polyline.size(); j++) {
-                                    final LatLngZ coordinate = polyline.get(j);
-                                    final JSONObject coordinateJSON = new JSONObject();
-                                    coordinateJSON.put("lat", coordinate.lat);
-                                    coordinateJSON.put("lon", coordinate.lng);
-                                    coordinateJSON.put("z", coordinate.z);
-                                    try {
-                                        // AQIUS from each coordinate.
-                                        final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
-                                                coordinate);
-                                        coordinateJSON.put("aqi", aqiFetch.AQIUS());
-                                        
-                                        // Add AQIUS to total AQIUS for route.
-                                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
-                                    } catch (IOException e) {
-                                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
-                                        coordinateJSON.put("aqi", "?");
-                                    }
-                                    routeJSON.put("c" + j, coordinateJSON);
-                                    
-                                    // Prevent as much overhead as possible.
-                                    Thread.sleep(CONNECTION_THREAD_SLEEP);
-                                }
-                                
-                                routeJSON.put("totalRouteAqi", totalRouteAqi);
-                                
-                                // Calculate least polluted route.
-                                if (lastAqi == 0 || lastAqi > totalRouteAqi) {
-                                    leastPollutedRoute = routeJSON;
-                                    lastAqi = totalRouteAqi;
-                                }
-                                
-                                toReturnJSON.put("route" + i, routeJSON);
-                            }
-                            
-                            toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
+                            routeGet(socket, toReturnJSON, answer);
                         }
                         
                         dos.writeUTF(toReturnJSON.toString());
@@ -236,111 +157,104 @@ public final class ServerClientCommunication {
     }
     
     /**
-     * Testing method.
-     * @return {@link ServerClientCommunication} of this.
+     * Processes route-get command.
+     * @param socket {@link Socket} for the socket communication.
+     * @param toReturnJSON {@link JSONObject} for the returning JSON.
+     * @param answer {@link JSONObject} for the answering JSON.
+     * @return {@link JSONObject} of the returning JSON.
+     * @throws JSONException if a JSON error occurred.
+     * @throws IOException if an IO error occurred.
+     * @throws URISyntaxException if URL has a syntax error.
+     * @throws InterruptedException if the thread was interrupted.
      */
-    public ServerClientCommunication test() {
-        try {
-            // Data to send to client.
-            final JSONObject toReturnJSON = new JSONObject();
-            // Time stamp to send to client.
-            toReturnJSON.put("ts", java.time.Clock.systemUTC().instant());
-            // Command to send to client.
-            toReturnJSON.put("serverCommand", "route-send");
-            // Origin latitude to start at.
-            final String originLat = "52.53232637420297";
-            toReturnJSON.put("originLat", originLat);
-            // Origin longitude to start at.
-            final String originLon = "13.378873988986015";
-            toReturnJSON.put("originLon", originLon);
-            final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
-            
-            // Destination latitude to end at.
-            final String destinationLat = "52.53098367713392";
-            // Destination longitude to end at.
-            final String destinationLon = "13.384566977620125";
-            final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
-            
-            LOGGER.log(Level.INFO, "Client <TEST> asking for route from "
-            + origin + " to " + destination);
-    
-            LOGGER.log(Level.INFO, "Will try to send to client <TEST> "
-            + HERE_ALTERNATIVES + " " 
-                    + HERE_TRANSPORT_MODE + " routes.");
-            
-            // This is where things get tricky.
-            // 1. Get all possible routes.
-            // 2. Put all route coordinates in their own json objects.
-            // 3. Get air pollution from each route coordinate.
-            // 4. Sum all the air pollution from each route.
-            // 5. Label best route.
-            
-            // TODO: Add truck information.
-            
-            JSONObject leastPollutedRoute = null;
-            double lastAqi = 0;
-            
-            // Routes from coordinates and their polylines.
-            final HERERoute routeFetch = new HERERoute(HERE_API_KEY, origin,
-                    destination, HERE_TRANSPORT_MODE,
-                    HERE_ALTERNATIVES, "polyline");
+    public JSONObject routeGet(final Socket socket, final JSONObject toReturnJSON,
+            final JSONObject answer) throws JSONException, IOException,
+            URISyntaxException, InterruptedException {
+        // Command to send to client.
+        toReturnJSON.put("serverCommand", "route-send");
+        // Origin latitude to start at.
+        final String originLat = answer.getString("originLat");
+        toReturnJSON.put("originLat", originLat);
+        // Origin longitude to start at.
+        final String originLon = answer.getString("originLon");
+        toReturnJSON.put("originLon", originLon);
+        final LatLngZ origin = new LatLngZ(new Double(originLat), new Double(originLon));
+        
+        // Destination latitude to end at.
+        final String destinationLat = answer.getString("destinationLat");
+        // Destination longitude to end at.
+        final String destinationLon = answer.getString("destinationLon");
+        final LatLngZ destination = new LatLngZ(new Double(destinationLat), new Double(destinationLon));
+        
+        LOGGER.log(Level.INFO, "Client " + socket + " asking for route from "
+        + origin + " to " + destination);
 
-            for (int i = 0; i < routeFetch.routeArray().length(); i++) {
-                final JSONObject routeJSON = new JSONObject();
-                final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
-                double totalRouteAqi = 0;
-                
-                // Gets all coordinates from polyline.
-                for (int j = 0; j < polyline.size(); j++) {
-                    final LatLngZ coordinate = polyline.get(j);
-                    final JSONObject coordinateJSON = new JSONObject();
-                    coordinateJSON.put("lat", coordinate.lat);
-                    coordinateJSON.put("lon", coordinate.lng);
-                    coordinateJSON.put("z", coordinate.z);
-                    try {
-                        // AQIUS from each coordinate.
-                        final AirVisualAQI aqiFetch = new AirVisualAQI(AIR_VISUAL_API_KEY,
-                                coordinate);
-                        
-                        coordinateJSON.put("aqi", aqiFetch.AQIUS());
-                        
-                        // Add AQIUS to total AQIUS for route.
-                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route, "
-                                + "substituting with zero.", e);
-                        coordinateJSON.put("aqi", 0);  
-                    }
-                    routeJSON.put("c" + j, coordinateJSON);
+        LOGGER.log(Level.INFO, "Will try to send to client " + socket
+                + " " + HERE_ALTERNATIVES + " " 
+                + HERE_TRANSPORT_MODE + " routes.");
+        
+        // This is where things get tricky.
+        // 1. Get all possible routes.
+        // 2. Put all route coordinates in their own json objects.
+        // 3. Get air pollution from each route coordinate.
+        // 4. Sum all the air pollution from each route.
+        // 5. Label best route.
+        
+        // TODO: Add truck information.
+        
+        JSONObject leastPollutedRoute = null;
+        double lastAqi = 0;
+        
+        // Routes from coordinates and their polylines.
+        final HERERoute routeFetch = new HERERoute(this.hereApiKey, origin,
+                destination, HERE_TRANSPORT_MODE,
+                HERE_ALTERNATIVES, "polyline");
+
+        for (int i = 0; i < routeFetch.routeArray().length(); i++) {
+            final JSONObject routeJSON = new JSONObject();
+            final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
+            double totalRouteAqi = 0;
+            
+            // Gets all coordinates from polyline.
+            for (int j = 0; j < polyline.size(); j++) {
+                final LatLngZ coordinate = polyline.get(j);
+                final JSONObject coordinateJSON = new JSONObject();
+                coordinateJSON.put("lat", coordinate.lat);
+                coordinateJSON.put("lon", coordinate.lng);
+                coordinateJSON.put("z", coordinate.z);
+                try {
+                    // AQIUS from each coordinate.
+                    final AirVisualAQI aqiFetch = new AirVisualAQI(this.airVisualAPIKey,
+                            coordinate);
+                    coordinateJSON.put("aqi", aqiFetch.AQIUS().doubleValue());
+                    coordinateJSON.put("aqi", 0);
                     
-                    // Prevent as much overhead as possible.
-                    Thread.sleep(CONNECTION_THREAD_SLEEP);
+                    // Add AQIUS to total AQIUS for route.
+                    totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
+                    coordinateJSON.put("aqi", "?");
                 }
+                routeJSON.put("c" + j, coordinateJSON);
                 
-                routeJSON.put("totalRouteAqi", totalRouteAqi);
-                
-                // Calculate least polluted route.
-                if (lastAqi == 0 || lastAqi > totalRouteAqi) {
-                    leastPollutedRoute = routeJSON;
-                    lastAqi = totalRouteAqi;
-                }
-                
-                toReturnJSON.put("route" + i, routeJSON);
+                // Prevent as much overhead as possible.
+                Thread.sleep(CONNECTION_THREAD_SLEEP);
             }
             
-            toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
-            LOGGER.log(Level.INFO, "Sending to client <TEST>: " + toReturnJSON.toString());
-        } catch (NumberFormatException e) {
-            LOGGER.log(Level.WARNING, "Client <TEST> sent a bad formatted message.", e);
-        } catch (JSONException e) {
-            LOGGER.log(Level.WARNING, "Client <TEST> sent a bad formatted message.", e);
-        } catch (URISyntaxException e) {
-            LOGGER.log(Level.WARNING, "URI has a bad format.", e);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Client <TEST> connection error.", e);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Thread interrupted.", e);
+            routeJSON.put("totalRouteAqi", totalRouteAqi);
+            
+            // Calculate least polluted route.
+            if (lastAqi == 0 || lastAqi > totalRouteAqi) {
+                leastPollutedRoute = routeJSON;
+                lastAqi = totalRouteAqi;
+            }
+            
+            // Add route.
+            // toReturnJSON.put("route" + i, routeJSON);
         }
-        return this;
+        
+        toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
+        
+        return toReturnJSON;
     }
 }
