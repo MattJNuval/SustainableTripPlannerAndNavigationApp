@@ -13,7 +13,7 @@
   <class id="2" language="java" name="sustainability_app.server.comm.ServerClientCommunication.ClientThread" 
     project="ServerSide" file="/ServerSide/src/main/java/sustainability_app/server/comm/ServerClientCommunication.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="708" y="87"/>    
+    <position height="-1" width="-1" x="629" y="57"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -23,7 +23,7 @@
   <class id="3" language="java" name="sustainability_app.server.comm.ServerClientCommunication" project="ServerSide" 
     file="/ServerSide/src/main/java/sustainability_app/server/comm/ServerClientCommunication.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="339" y="76"/>    
+    <position height="-1" width="-1" x="307" y="69"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -33,7 +33,7 @@
   <class id="4" language="java" name="sustainability_app.server.comm.AirVisualAQI" project="ServerSide" 
     file="/ServerSide/src/main/java/sustainability_app/server/comm/AirVisualAQI.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="209" y="275"/>    
+    <position height="-1" width="-1" x="89" y="218"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -43,7 +43,7 @@
   <class id="5" language="java" name="sustainability_app.server.comm.AirVisualAQI.AirVisualAQIRequest" 
     project="ServerSide" file="/ServerSide/src/main/java/sustainability_app/server/comm/AirVisualAQI.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="208" y="432"/>    
+    <position height="-1" width="-1" x="99" y="355"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -52,7 +52,7 @@
   </class>  
   <class id="6" language="java" name="sustainability_app.server.comm.HERERoute.HERERouteRequest" project="ServerSide" 
     file="/ServerSide/src/main/java/sustainability_app/server/comm/HERERoute.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="427" y="433"/>    
+    <position height="-1" width="-1" x="553" y="425"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -61,7 +61,7 @@
   </class>  
   <class id="7" language="java" name="sustainability_app.server.comm.HERERoute" project="ServerSide" 
     file="/ServerSide/src/main/java/sustainability_app/server/comm/HERERoute.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="486" y="281"/>    
+    <position height="-1" width="-1" x="515" y="254"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -71,7 +71,7 @@
   <class id="8" language="java" name="com.here.flexpolyline.PolylineEncoderDecoder.LatLngZ" project="ServerSide" 
     file="/ServerSide/src/main/java/com/here/flexpolyline/PolylineEncoderDecoder.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="737" y="412"/>    
+    <position height="-1" width="-1" x="802" y="315"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -81,7 +81,7 @@
   <class id="9" language="java" name="com.here.flexpolyline.PolylineEncoderDecoder" project="ServerSide" 
     file="/ServerSide/src/main/java/com/here/flexpolyline/PolylineEncoderDecoder.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="765" y="234"/>    
+    <position height="-1" width="-1" x="914" y="107"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
@@ -91,49 +91,95 @@
   <class id="10" language="java" name="com.here.flexpolyline.PolylineEncoderDecoder.Decoder" project="ServerSide" 
     file="/ServerSide/src/main/java/com/here/flexpolyline/PolylineEncoderDecoder.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="895" y="360"/>    
+    <position height="-1" width="-1" x="976" y="260"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="false" private="false" static="false"/>      
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <nesting id="11">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="10"/>  
-  </nesting>  
-  <dependency id="12">    
+  <class id="11" language="java" name="sustainability_app.server.comm.AbstractAPIRequest" project="ServerSide" 
+    file="/ServerSide/src/main/java/sustainability_app/server/comm/AbstractAPIRequest.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="136" y="497"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="sustainability_app.server.comm.PostWebRequest" project="ServerSide" 
+    file="/ServerSide/src/main/java/sustainability_app/server/comm/PostWebRequest.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="600" y="541"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="sustainability_app.server.comm.GetWebRequest" project="ServerSide" 
+    file="/ServerSide/src/main/java/sustainability_app/server/comm/GetWebRequest.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="405" y="610"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <dependency id="14">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="7"/>  
   </dependency>  
-  <dependency id="13">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <dependency id="14">    
+  <generalization id="15">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <dependency id="16">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
-  <nesting id="15">    
+  <generalization id="17">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <dependency id="18">    
     <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="6"/>  
-  </nesting>  
-  <nesting id="16">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </nesting>  
-  <nesting id="17">    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="19">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <nesting id="20">    
     <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="8"/>  
   </nesting>  
-  <nesting id="18">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="5"/>  
+  <nesting id="21">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
   </nesting>  
-  <dependency id="19">    
+  <nesting id="22">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="10"/>  
+  </nesting>  
+  <nesting id="23">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="6"/>  
+  </nesting>  
+  <dependency id="24">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="13"/>  
+  </dependency>  
+  <dependency id="25">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="4"/>  
   </dependency>  
+  <nesting id="26">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="false" protected="false" private="false" static="false"/>    
