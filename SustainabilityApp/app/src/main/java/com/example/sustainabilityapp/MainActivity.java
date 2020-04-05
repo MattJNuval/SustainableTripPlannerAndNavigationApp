@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,16 +19,20 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.AndroidXMapFragment;
 import com.here.android.mpa.mapping.Map;
+import com.yelp.fusion.client.connection.YelpFusionApi;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String CLIENT = "CLIENT";
+
+    private final static String ACTIVITY = "ACTIVITY";
 
     private PermissionChecker permissionChecker = null;
     private HereMaps maps = null;
@@ -45,14 +50,13 @@ public class MainActivity extends AppCompatActivity {
         maps.initialize();
     }
 
-    public void searchButton(View view) {
+    public void searchButton(View view) throws InterruptedException {
         JsonString jsonString = new JsonString();
 
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
         maps.toSearch(searchText, jsonString.RouteJson(), 34.0686074,-118.2924265);
-        //Thread client = new Client("3.86.111.23", 5056, "");
-        //client.start();
+
     }
 
     public void currentButton(View view) {

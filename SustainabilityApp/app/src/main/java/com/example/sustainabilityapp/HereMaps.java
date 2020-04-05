@@ -28,20 +28,31 @@ import com.here.android.mpa.routing.RouteResult;
 import com.here.android.mpa.routing.RouteWaypoint;
 import com.here.android.mpa.routing.Router;
 import com.here.android.mpa.routing.RoutingError;
+import com.yelp.fusion.client.connection.YelpFusionApi;
+import com.yelp.fusion.client.connection.YelpFusionApiFactory;
+import com.yelp.fusion.client.models.Business;
+import com.yelp.fusion.client.models.SearchResponse;
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HereMaps {
 
     private final static String CLIENT = "CLIENT";
+    private final static String YELP = "YELP";
 
     private Activity mainActivity = null;
     private FragmentActivity mainFragmentActivity = null;
@@ -64,6 +75,7 @@ public class HereMaps {
         mainActivity = activity;
         mainFragmentActivity = fragmentActivity;
     }
+
 
     /**
      * Set the marker with given aqi labels on the map using the latitude and longitude
@@ -123,6 +135,14 @@ public class HereMaps {
     public void toCurrentPosition() {
         map.setCenter(positioningManager.getPosition().getCoordinate(),
                 Map.Animation.BOW);
+    }
+
+    public String getLatitude() {
+        return positioningManager.getPosition().getCoordinate().getLatitude() + "";
+    }
+
+    public String getLongitude() {
+        return positioningManager.getPosition().getCoordinate().getLongitude() + "";
     }
 
     /**
@@ -223,14 +243,126 @@ public class HereMaps {
         });
     }
 
+    private void createRouteOther(double finalLatitude, double finalLongitude) {
+        CoreRouter coreRouter = new CoreRouter();
+
+        RoutePlan routePlan = new RoutePlan();
+
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setHighwaysAllowed(true);
+        routeOptions.setRouteType(RouteOptions.Type.BALANCED);
+        routeOptions.setRouteCount(1);
+        routePlan.setRouteOptions(routeOptions);
+
+        RouteWaypoint startPoint = new RouteWaypoint(positioningManager.getPosition().getCoordinate());
+        RouteWaypoint finalDestination = new RouteWaypoint(new GeoCoordinate(finalLatitude, finalLongitude));
+
+        routePlan.addWaypoint(startPoint);
+        routePlan.addWaypoint(finalDestination);
+
+        coreRouter.calculateRoute(routePlan, new Router.Listener<List<RouteResult>, RoutingError>() {
+            @Override
+            public void onProgress(int i) {
+
+            }
+
+            @Override
+            public void onCalculateRouteFinished(List<RouteResult> routeResults, RoutingError routingError) {
+                if(routingError == RoutingError.NONE) {
+                    if(routeResults.get(0).getRoute() != null) {
+                        mapRoute = new MapRoute(routeResults.get(0).getRoute());
+                        mapRoute.setManeuverNumberVisible(true);
+                        map.addMapObject(mapRoute);
+                        GeoBoundingBox geoBoundingBox = routeResults.get(0).getRoute().getBoundingBox();
+                        map.zoomTo(geoBoundingBox, Map.Animation.BOW, Map.MOVE_PRESERVE_ORIENTATION);
+                    } else {
+                        Toast.makeText(mainActivity, "Error: route results returned is not valid", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(mainActivity, "Error: route calculation returned error code: " + routingError, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * Searches the nearest business around the current location and calls createRouteOther(latitude, longitude) method when business's latitude and longitude is retrieved
+     * @param input
+     */
+    private void searchYelp(final String input){
+        try {
+            String apiKey = "hkkJIKWdwY1z1mnqBkp711ceL7Gx14oUa9Z7brHqklFM9fHbjeOWU_6NmWNGKqUYPrE0ilZIWMvzF4R87eGXAZ14dWHFzqYgRscBE7jX6TByS9fAYGSPKEQe5qAwXnYx";
+            YelpFusionApiFactory yelpFusionApiFactory = new YelpFusionApiFactory();
+            YelpFusionApi yelpFusionApi = yelpFusionApiFactory.createAPI(apiKey);
+            Log.i(YELP, "Yelp Authentication Complete");
+
+            HashMap<String, String> params = new HashMap<>();
+
+            params.put("term", input);
+            params.put("latitude", positioningManager.getPosition().getCoordinate().getLatitude()+"");
+            params.put("longitude", positioningManager.getPosition().getCoordinate().getLongitude()+"");
+
+            Call<SearchResponse> call = yelpFusionApi.getBusinessSearch(params);
+
+            Callback<SearchResponse> callback = new Callback<SearchResponse>() {
+                @Override
+                public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                    try {
+                        SearchResponse searchResponse = response.body();
+                        ArrayList<Business> businesses = searchResponse.getBusinesses();
+                        for (int i = 0; i < 20; i++) {
+                            if(businesses.get(i).getDistance() <= 3000.0) {
+                                Log.i(YELP, businesses.get(i).getName() + "\n"
+                                        + "(" + businesses.get(i).getCoordinates().getLatitude() + "," + businesses.get(i).getCoordinates().getLongitude() + ")\n"
+                                        + "Distance: " + businesses.get(i).getDistance());
+                                createRouteOther(businesses.get(i).getCoordinates().getLatitude(), businesses.get(i).getCoordinates().getLongitude());
+                                break;
+                            }
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        Toast.makeText(mainActivity.getApplicationContext(),input + " not found",Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SearchResponse> call, Throwable t) {
+                    Log.i(YELP,"UH OH! SUMTING WENT WONG!");
+                }
+            };
+
+
+            call.enqueue(callback);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * Searches the route of the given latitude and longitude
+     * @param input
+     * @param jsonString
+     * @param finalLatitude
+     * @param finalLongitude
+     */
     public void toSearch(String input, String jsonString, double finalLatitude, double finalLongitude) {
         if(map != null && mapRoute != null) {
             map.removeMapObject(mapRoute);
             map.removeMapObjects(mapObjectList);
             mapRoute = null;
+            if(input.equalsIgnoreCase("ralphs")) {
+                createRoute(jsonString, finalLatitude, finalLongitude);
+            } else {
+                searchYelp(input);
+            }
         } else {
             if(input.equalsIgnoreCase("ralphs")) {
                 createRoute(jsonString, finalLatitude, finalLongitude);
+            } else {
+                searchYelp(input);
             }
         }
     }

@@ -36,6 +36,6 @@ dependencies {
 
     implementation(name:'HERE-sdk', ext:'aar')
 
-
+    implementation 'io.github.ranga543:yelp-fusion-client:0.1.2'
 
 }
