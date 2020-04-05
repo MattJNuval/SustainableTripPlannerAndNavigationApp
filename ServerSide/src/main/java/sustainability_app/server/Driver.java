@@ -28,6 +28,9 @@ public class Driver {
     public static void main(final String[] args) {
         if (args.length >= 4) {
             final int portNumber = Integer.parseInt(args[0]);
+            final boolean testing = Boolean.parseBoolean(args[1]);
+            final String airVisualAPIKey = args[2];
+            final String hereAPIKey = args[3];
             LOGGER.log(Level.INFO, "Sustainable Trip Planner and Navigation "
                     + "App Server starting on port " + portNumber + ".");
 
@@ -35,10 +38,10 @@ public class Driver {
             ServerClientCommunication serverClientCommunication = null;
             
             try {
-                serverClientCommunication = new ServerClientCommunication(portNumber, args[2],
-                        args[3]);
+                serverClientCommunication = new ServerClientCommunication(portNumber,
+                        airVisualAPIKey, hereAPIKey);
                 LOGGER.log(Level.INFO, "Ready.");
-                if (Boolean.parseBoolean(args[1])) { // For testing purposes.
+                if (testing) { // For testing purposes.
                     final JSONObject testAnswer = new JSONObject();
                     testAnswer.put("originLat", "52.53232637420297");
                     testAnswer.put("originLon", "13.378873988986015");

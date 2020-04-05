@@ -27,20 +27,20 @@ public final class ServerClientCommunication {
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     
     private final String airVisualAPIKey;
-    private final String hereApiKey;
+    private final String hereAPIKey;
     private final ServerSocket serverSocket;
 
     /**
      * Constructor for a server and client communication.
      * @param portNumber {@link int} for the port number.
      * @param airVisualAPIKey (@link String} for the Air Visual API Key.
-     * @param hereApiKey (@link String} for the HERE API Key.
+     * @param hereAPIKey (@link String} for the HERE API Key.
      * @throws IOException if an IO error occurred.
      */
     public ServerClientCommunication(final int portNumber, final String airVisualAPIKey,
-            final String hereApiKey) throws IOException {
+            final String hereAPIKey) throws IOException {
         this.airVisualAPIKey = airVisualAPIKey;
-        this.hereApiKey = hereApiKey;
+        this.hereAPIKey = hereAPIKey;
         serverSocket = new ServerSocket(portNumber);
         serverSocket.setSoTimeout(0);
     }
@@ -206,7 +206,7 @@ public final class ServerClientCommunication {
         double lastAqi = 0;
         
         // Routes from coordinates and their polylines.
-        final HERERoute routeFetch = new HERERoute(this.hereApiKey, origin,
+        final HERERoute routeFetch = new HERERoute(this.hereAPIKey, origin,
                 destination, HERE_TRANSPORT_MODE,
                 HERE_ALTERNATIVES, "polyline");
 
