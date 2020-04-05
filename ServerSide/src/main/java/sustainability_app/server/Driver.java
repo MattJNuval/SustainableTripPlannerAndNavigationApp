@@ -27,8 +27,6 @@ public class Driver {
      */
     public static void main(final String[] args) {
         if (args.length >= 4) {
-            LOGGER.log(Level.INFO, "Sustainable Trip Planner and Navigation "
-                    + "App Server starting on port " + args.length + ".");
             final int portNumber = Integer.parseInt(args[0]);
             LOGGER.log(Level.INFO, "Sustainable Trip Planner and Navigation "
                     + "App Server starting on port " + portNumber + ".");
