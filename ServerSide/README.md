@@ -33,4 +33,4 @@ gradlew run <port> <testing-value> <air-visual-api-key> <here-api-key>
 ```
 in a terminal in the same directory (for Windows systems, use gradlew.bat).
 
-You must specify a port number for <port>, a testing value (true/false) for <testing-value>, an Air Visual API Key for <air-visual-api-key>, and a HERE API Key for <here-api-key>.
+You must specify a port number for ``<port>``, a testing value (true/false) for ``<testing-value>``, an Air Visual API Key for ``<air-visual-api-key>``, and a HERE API Key for ``<here-api-key>``.
