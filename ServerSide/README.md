@@ -11,10 +11,13 @@ The server-side is not the application itself, but rather a seperate application
 * Java 1.8.0_221
 
 ## API Keys
-It is recommended that you change API keys to your own.
-```java
-sustainability_app.server.comm.ServerClientCommunication.AIR_VISUAL_API_KEY
-sustainability_app.server.comm.ServerClientCommunication.HERE_API_KEY
+You must get your own API Key for [Air Visual](https://www.iqair.com/) and [HERE](https://www.here.com/).
+We have two sample keys for you to use:
+```
+Air Visual API Key: d7664ac9-d9fb-4ed4-b6f6-2e8feac28693
+```
+```
+HERE API Key: ZOBTtCPG_WoP8VHh-xDXFdekw0AzdKkF9S5gGvZkxDY
 ```
 
 ## Usage
@@ -26,8 +29,8 @@ in a terminal in the same directory (for Windows systems, use gradlew.bat).
 
 After building, just execute
 ```bash
-gradlew run <port> false
+gradlew run <port> <testing-value> <air-visual-api-key> <here-api-key>
 ```
 in a terminal in the same directory (for Windows systems, use gradlew.bat).
 
-You must specify a port.
+You must specify a port number for <port>, a testing value (true/false) for <testing-value>, an Air Visual API Key for <air-visual-api-key>, and a HERE API Key for <here-api-key>.
