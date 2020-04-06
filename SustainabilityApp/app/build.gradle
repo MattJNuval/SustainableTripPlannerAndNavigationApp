@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.sustainabilityapp"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,13 @@ android {
 }
 
 
+repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -44,9 +51,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation group: 'io.joshworks.unirest', name: 'unirest-java', version: '1.5.0'
 
-    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    implementation(name:'HERE-sdk', ext:'aar')
 
+    implementation 'io.github.ranga543:yelp-fusion-client:0.1.2'
 
 }
