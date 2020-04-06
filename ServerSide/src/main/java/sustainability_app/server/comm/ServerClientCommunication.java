@@ -82,7 +82,7 @@ public final class ServerClientCommunication {
                         if (command.equals("exit")) { // Client exit command.
                             socket.close();
                             LOGGER.log(Level.INFO, "Client " + socket + " disconnected.");
-                         // Breaks the connection.
+                            // Breaks the connection.
                             break;
                         }
                         else if (command.equals("ping")) { // Client ping command.
@@ -226,11 +226,10 @@ public final class ServerClientCommunication {
                         // AQIUS from each coordinate.
                         final AirVisualAQI aqiFetch = new AirVisualAQI(this.airVisualAPIKey,
                                 coordinate);
-                        coordinateJSON.put("aqi", aqiFetch.AQIUS().doubleValue());
-                        coordinateJSON.put("aqi", 0);
+                        coordinateJSON.put("aqi", aqiFetch.AQIUS());
                         
                         // Add AQIUS to total AQIUS for route.
-                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                        totalRouteAqi += aqiFetch.AQIUS();
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
                         coordinateJSON.put("aqi", "?");
