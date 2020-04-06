@@ -163,12 +163,11 @@ public final class ServerClientCommunication {
      * @param answer {@link JSONObject} for the answering JSON.
      * @return {@link JSONObject} of the returning JSON.
      * @throws JSONException if a JSON error occurred.
-     * @throws IOException if an IO error occurred.
      * @throws URISyntaxException if URL has a syntax error.
      * @throws InterruptedException if the thread was interrupted.
      */
     public JSONObject routeGet(final Socket socket, final JSONObject toReturnJSON,
-            final JSONObject answer) throws JSONException, IOException,
+            final JSONObject answer) throws JSONException,
             URISyntaxException, InterruptedException {
         // Command to send to client.
         toReturnJSON.put("serverCommand", "route-send");
@@ -202,58 +201,62 @@ public final class ServerClientCommunication {
         
         // TODO: Add truck information.
         
-        JSONObject leastPollutedRoute = null;
-        double lastAqi = 0;
-        
-        // Routes from coordinates and their polylines.
-        final HERERoute routeFetch = new HERERoute(this.hereAPIKey, origin,
-                destination, HERE_TRANSPORT_MODE,
-                HERE_ALTERNATIVES, "polyline");
-
-        for (int i = 0; i < routeFetch.routeArray().length(); i++) {
-            final JSONObject routeJSON = new JSONObject();
-            final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
-            double totalRouteAqi = 0;
+        try {
+            JSONObject leastPollutedRoute = null;
+            double lastAqi = 0;
             
-            // Gets all coordinates from polyline.
-            for (int j = 0; j < polyline.size(); j++) {
-                final LatLngZ coordinate = polyline.get(j);
-                final JSONObject coordinateJSON = new JSONObject();
-                coordinateJSON.put("lat", coordinate.lat);
-                coordinateJSON.put("lon", coordinate.lng);
-                coordinateJSON.put("z", coordinate.z);
-                try {
-                    // AQIUS from each coordinate.
-                    final AirVisualAQI aqiFetch = new AirVisualAQI(this.airVisualAPIKey,
-                            coordinate);
-                    coordinateJSON.put("aqi", aqiFetch.AQIUS().doubleValue());
-                    coordinateJSON.put("aqi", 0);
-                    
-                    // Add AQIUS to total AQIUS for route.
-                    totalRouteAqi += aqiFetch.AQIUS().doubleValue();
-                } catch (IOException e) {
-                    LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
-                    coordinateJSON.put("aqi", "?");
-                }
-                routeJSON.put("c" + j, coordinateJSON);
+            // Routes from coordinates and their polylines.
+            final HERERoute routeFetch = new HERERoute(this.hereAPIKey, origin,
+                    destination, HERE_TRANSPORT_MODE,
+                    HERE_ALTERNATIVES, "polyline");
+            
+            for (int i = 0; i < routeFetch.routeArray().length(); i++) {
+                final JSONObject routeJSON = new JSONObject();
+                final List<LatLngZ> polyline = routeFetch.polyline(i, 0);
+                double totalRouteAqi = 0;
                 
-                // Prevent as much overhead as possible.
-                Thread.sleep(CONNECTION_THREAD_SLEEP);
+                // Gets all coordinates from polyline.
+                for (int j = 0; j < polyline.size(); j++) {
+                    final LatLngZ coordinate = polyline.get(j);
+                    final JSONObject coordinateJSON = new JSONObject();
+                    coordinateJSON.put("lat", coordinate.lat);
+                    coordinateJSON.put("lon", coordinate.lng);
+                    coordinateJSON.put("z", coordinate.z);
+                    try {
+                        // AQIUS from each coordinate.
+                        final AirVisualAQI aqiFetch = new AirVisualAQI(this.airVisualAPIKey,
+                                coordinate);
+                        coordinateJSON.put("aqi", aqiFetch.AQIUS().doubleValue());
+                        coordinateJSON.put("aqi", 0);
+                        
+                        // Add AQIUS to total AQIUS for route.
+                        totalRouteAqi += aqiFetch.AQIUS().doubleValue();
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "Failed to get coordinate AQIUS for route.", e);
+                        coordinateJSON.put("aqi", "?");
+                    }
+                    routeJSON.put("c" + j, coordinateJSON);
+                    
+                    // Prevent as much overhead as possible.
+                    Thread.sleep(CONNECTION_THREAD_SLEEP);
+                }
+                
+                routeJSON.put("totalRouteAqi", totalRouteAqi);
+                
+                // Calculate least polluted route.
+                if (lastAqi == 0 || lastAqi > totalRouteAqi) {
+                    leastPollutedRoute = routeJSON;
+                    lastAqi = totalRouteAqi;
+                }
+                
+                // Add route.
+                // toReturnJSON.put("route" + i, routeJSON);
             }
             
-            routeJSON.put("totalRouteAqi", totalRouteAqi);
-            
-            // Calculate least polluted route.
-            if (lastAqi == 0 || lastAqi > totalRouteAqi) {
-                leastPollutedRoute = routeJSON;
-                lastAqi = totalRouteAqi;
-            }
-            
-            // Add route.
-            // toReturnJSON.put("route" + i, routeJSON);
+            toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to get route.", e);
         }
-        
-        toReturnJSON.put("leastAqiRoute", leastPollutedRoute);
         
         return toReturnJSON;
     }
