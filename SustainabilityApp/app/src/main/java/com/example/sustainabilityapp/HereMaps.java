@@ -44,14 +44,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HereMaps {
+public class HereMaps extends Thread {
 
-    private final static String CLIENT = "CLIENT";
+    private final static String HERE = "HERE";
     private final static String YELP = "YELP";
 
     private Activity mainActivity = null;
@@ -65,6 +67,7 @@ public class HereMaps {
     private Image image;
     private MapLabeledMarker mapLabeledMarker;
     private List<MapObject> mapObjectList;
+    private BlockingQueue queue = null;
 
     /**
      * Constructor
@@ -112,7 +115,7 @@ public class HereMaps {
                 String key = keys.next();
                 if(jsonObject1.get(key) instanceof  JSONObject) {
                     //if(!jsonObject1.getJSONObject(key).get("aqi").equals("?")) {
-                        Log.i(CLIENT, "lat: " + jsonObject1.getJSONObject(key).get("lat") + "\n"
+                        Log.i(HERE, "lat: " + jsonObject1.getJSONObject(key).get("lat") + "\n"
                                 + "lon: " + jsonObject1.getJSONObject(key).get("lon") + "\n"
                                 + "aqi: " + jsonObject1.getJSONObject(key).get("aqi") + "\n\n");
                         double latitude = Double.parseDouble(jsonObject1.getJSONObject(key).get("lat")+"");
@@ -244,6 +247,21 @@ public class HereMaps {
     }
 
     private void createRouteOther(double finalLatitude, double finalLongitude) {
+
+        /* BlockingQueue queue = new ArrayBlockingQueue(1024);
+
+        Client client = new Client("52.22.61.127", 5056, queue, "{\n" +
+                "  \"clientCommand\": \"route-get\",\n" +
+                "  \"originLat\": \""+positioningManager.getPosition().getCoordinate().getLatitude()+"\",\n" +
+                "  \"originLon\": \""+positioningManager.getPosition().getCoordinate().getLongitude()+"\",\n" +
+                "  \"destinationLat\": \""+finalLatitude+"\",\n" +
+                "  \"destinationLon\": \""+finalLongitude+"\"\n" +
+                "}");
+        Consumer consumer = new Consumer(queue);
+
+        new Thread(client).start();
+        new Thread(consumer).start(); */
+
         CoreRouter coreRouter = new CoreRouter();
 
         RoutePlan routePlan = new RoutePlan();
@@ -331,7 +349,6 @@ public class HereMaps {
                 }
             };
 
-
             call.enqueue(callback);
 
         } catch (IOException e) {
@@ -355,11 +372,15 @@ public class HereMaps {
             mapRoute = null;
             if(input.equalsIgnoreCase("ralphs")) {
                 createRoute(jsonString, finalLatitude, finalLongitude);
+            } else if(input.equalsIgnoreCase("starbucks")) {
+                createRoute(jsonString, finalLatitude, finalLongitude);
             } else {
                 searchYelp(input);
             }
         } else {
             if(input.equalsIgnoreCase("ralphs")) {
+                createRoute(jsonString, finalLatitude, finalLongitude);
+            } else if(input.equalsIgnoreCase("starbucks")) {
                 createRoute(jsonString, finalLatitude, finalLongitude);
             } else {
                 searchYelp(input);
@@ -439,5 +460,7 @@ public class HereMaps {
             });
         }
     }
+
+
 
 }

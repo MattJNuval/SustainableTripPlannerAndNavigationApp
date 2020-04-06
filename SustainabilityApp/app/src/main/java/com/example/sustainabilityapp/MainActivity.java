@@ -55,7 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         searchEditText = (EditText)findViewById(R.id.search);
         String searchText = searchEditText.getText().toString();
-        maps.toSearch(searchText, jsonString.RouteJson(), 34.0686074,-118.2924265);
+        if(searchText.equalsIgnoreCase("ralphs")) {
+            maps.toSearch(searchText, jsonString.RouteJson(), 34.0686074, -118.2924265);
+        } else if(searchText.equalsIgnoreCase("starbucks")) {
+            maps.toSearch(searchText, jsonString.RouteJson2(), 34.06898,-118.30852);
+        }
 
     }
 
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pingButton(View view) {
-        Thread client = new Client("3.86.111.23", 5056, "{\n" +
+        Thread client = new Client("3.86.111.23", 5056, null, "{\n" +
                 "  \"clientCommand\": \"route-get\",\n" +
                 "  \"originLat\": \"34.0687464\",\n" +
                 "  \"originLon\": \"-118.3111569\",\n" +

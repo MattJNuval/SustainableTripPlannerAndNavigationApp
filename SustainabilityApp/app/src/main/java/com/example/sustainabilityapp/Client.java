@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.BlockingQueue;
 
 public class Client extends Thread {
     private static final String CLIENT = "CLIENT";
@@ -18,9 +19,12 @@ public class Client extends Thread {
     private int port;
     private String input;
 
-    public Client(String address, int port, String input) {
+    protected BlockingQueue queue = null;
+
+    public Client(String address, int port, BlockingQueue queue, String input) {
        this.address = address;
        this.port = port;
+       this.queue = queue;
        this.input = input;
     }
 
@@ -47,8 +51,11 @@ public class Client extends Thread {
             dataOutputStream.writeUTF(input);
             String result = dataInputStream.readUTF();
             Log.i(CLIENT, result + "");
+            queue.put(result+"");
             dataOutputStream.writeUTF("{\"clientCommand\": \"exit\"}");
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
