@@ -248,7 +248,7 @@ public class HereMaps extends Thread {
 
     private void createRouteOther(double finalLatitude, double finalLongitude) {
 
-        /* BlockingQueue queue = new ArrayBlockingQueue(1024);
+        BlockingQueue queue = new ArrayBlockingQueue(1024);
 
         Client client = new Client("52.22.61.127", 5056, queue, "{\n" +
                 "  \"clientCommand\": \"route-get\",\n" +
@@ -260,7 +260,7 @@ public class HereMaps extends Thread {
         Consumer consumer = new Consumer(queue);
 
         new Thread(client).start();
-        new Thread(consumer).start(); */
+        new Thread(consumer).start();
 
         CoreRouter coreRouter = new CoreRouter();
 
