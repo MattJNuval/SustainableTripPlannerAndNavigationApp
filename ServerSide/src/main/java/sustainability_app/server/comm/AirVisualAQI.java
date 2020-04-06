@@ -53,11 +53,11 @@ public final class AirVisualAQI {
     
     /**
      * Retrieves AQIUS from pollution.
-     * @return {@link JSONObject} of the AQIUS.
+     * @return {@link double} of the AQIUS.
      * @throws JSONException if a JSON error occurred.
      */
-    public Number AQIUS() throws JSONException {
-        return pollution().getNumber("aqius");
+    public double AQIUS() throws JSONException {
+        return pollution().getDouble("aqius");
     }
     
     /**
