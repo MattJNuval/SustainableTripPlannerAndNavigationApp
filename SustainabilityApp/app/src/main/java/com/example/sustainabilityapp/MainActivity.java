@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         maps.initialize();
     }
 
+    /**
+     * Search button
+     * @param view
+     * @throws InterruptedException
+     */
     public void searchButton(View view) throws InterruptedException {
         JsonString jsonString = new JsonString();
 
@@ -64,14 +69,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Current position button
+     * @param view
+     */
     public void currentButton(View view) {
         maps.toCurrentPosition();
     }
 
+    /**
+     * Reset map markers and route button
+     * @param view
+     */
     public void resetButton(View view) {
         maps.toReset();
     }
 
+    /**
+     * Ping button
+     * @param view
+     */
     public void pingButton(View view) {
         Thread client = new Client("3.86.111.23", 5056, null, "{\n" +
                 "  \"clientCommand\": \"route-get\",\n" +
